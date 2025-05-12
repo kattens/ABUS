@@ -1,2 +1,10 @@
-# ABUS
-ABUS: Adaptability Bioinformatics Usability Score
+### 🧬 ABUS: Adaptability, Bioinformatics, and Usability Score
+
+**ABUS** is a structured scoring and recommendation framework designed to evaluate **Protein Language Models (PLMs)** based on their:
+
+* **Adaptability** to new tasks or data
+* **Bioinformatics relevance** for biological applications
+* **Usability** for researchers and developers
+
+The ABUS framework provides a fair, interpretable, and feature-driven scoring system to rank and recommend PLMs for bioinformatics use cases. It supports custom scoring profiles, visualization, and comparison tools to streamline PLM selection for your research.
+
