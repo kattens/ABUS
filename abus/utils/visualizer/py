@@ -1,0 +1,44 @@
+"""
+plot_category_bar: shows category-wise scores as a bar chart
+
+plot_radar: plots normalized scores on a radar/spider chart for profile comparison
+
+"""
+
+# abus/utils/visualizer.py
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def plot_category_bar(model_name: str, scores: dict):
+    categories = list(scores.keys())
+    values = [scores[cat] * 100 for cat in categories]  # Convert normalized [0–1] to [0–100]
+
+    plt.figure(figsize=(10, 5))
+    plt.bar(categories, values)
+    plt.title(f"Category Scores for {model_name}")
+    plt.ylabel("Score (0–100)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_radar(model_name: str, scores: dict):
+    labels = list(scores.keys())
+    values = [scores[label] for label in labels]
+    values += values[:1]  # close the loop
+
+    angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
+    angles += angles[:1]
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    ax.plot(angles, values, marker='o')
+    ax.fill(angles, values, alpha=0.25)
+    ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.set_yticklabels(["20", "40", "60", "80", "100"])
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    ax.set_title(f"Radar Profile: {model_name}")
+    plt.tight_layout()
+    plt.show()
