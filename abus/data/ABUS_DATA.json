@@ -1,0 +1,892 @@
+{
+{
+  "MULAN": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "MULAN uses a pre-trained sequence encoder combined with a separate structure adapter module, indicating modular design."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "The model adapts across multiple protein-related tasks like function prediction and secondary structure prediction."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "MULAN explicitly integrates both protein sequence and angle-based structure information."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Structure adapter processes structural angle information to enhance protein representation."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "The OpenReview paper does not mention released code explicitly. No GitHub link found yet."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Since no code repository is found, documentation cannot be evaluated; partial score given assuming typical OpenReview standards."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "Setup instructions are not available; assumed partial based on the complexity of architecture described."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 2,
+          "note": "Combines pre-trained components instead of building an excessively large model; efficient modular reuse."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Runtime scalability not benchmarked or discussed explicitly in the paper."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Output interpretability (like attention visualization) not explicitly discussed."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Directly aligns outputs to practical biological tasks (function prediction, secondary structure prediction, molecular interaction prediction)."
+        }
+      }
+    }
+  }
+}
+
+
+
+{
+  "ProCyon": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "While ProCyon is described as multimodal, modularity (separating sequence and phenotype modules) is implied but not explicitly highlighted."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Targets a wide range of domains: molecular function, disease association, phenotype-based properties."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Explicitly integrates protein sequence, phenotype data, and functional annotations as multimodal inputs."
+        },
+        "structural_awareness": {
+          "score": 0,
+          "note": "No indication that structural (3D) information is used — focuses on sequence and phenotype."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 0,
+          "note": "No open-source code link provided; no public repository found as of review time."
+        },
+        "documentation_quality": {
+          "score": 0,
+          "note": "No documentation or setup instructions are linked."
+        },
+        "setup_ease": {
+          "score": 0,
+          "note": "Setup cannot be assessed without available code."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 0,
+          "note": "ProCyon has 11 billion parameters, optimized for performance but not for size efficiency."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Large model size implies scaling challenges, but multimodal aggregation suggests some efficiency strategies."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Predicts phenotypic properties, but model interpretability (explanations, visualizations) not emphasized."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Very well aligned with biological tasks: phenotype prediction, disease function prediction."
+        }
+      }
+    }
+  }
+}
+
+
+
+{
+  "Evola": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "Integrates evolutionary information with LLMs, but modularity (e.g., plug-in modules) is not explicitly discussed."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Designed to answer a wide range of functional protein queries (functional annotations, structural stability, evolutionary relationships)."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Uses protein sequence, evolutionary data, and textual descriptions as input modalities."
+        },
+        "structural_awareness": {
+          "score": 1,
+          "note": "Mentions predictions about structural stability, but does not deeply integrate structural coordinates or 3D data."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 0,
+          "note": "No code repository available publicly; no GitHub or similar linked."
+        },
+        "documentation_quality": {
+          "score": 0,
+          "note": "No documentation or setup instructions available."
+        },
+        "setup_ease": {
+          "score": 0,
+          "note": "Cannot assess setup without access to code or pre-trained models."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 0,
+          "note": "80 billion parameters — extremely large model with no explicit efficiency optimizations discussed."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "No clear benchmarking data; large size implies resource-intensive inference, although designed for LLM-like scalability."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Generates functional responses, but interpretability methods (e.g., attention visualization) are not highlighted."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Strong task alignment: functional annotation, evolutionary relationship prediction, structural stability prediction."
+        }
+      }
+    }
+  }
+}
+
+
+{
+  "PoET-2": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "PoET-2 integrates nature-inspired modular embeddings, combining sequence, structure, and evolutionary features flexibly."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Achieves high performance across protein function prediction, structural property prediction, and mutational effect prediction tasks."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Explicitly processes sequence, structure, and evolutionary context together."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Uses structural representations directly in the learning process, enabling structural property prediction."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "Partial code is mentioned but not yet publicly available; OpenProtein.ai states future releases."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Some documentation is promised for future release; partial score given."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "Setup instructions will depend on code release; assumed partial for now."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 2,
+          "note": "PoET-2 delivers near-trillion-parameter model performance with only 182 million parameters — highly efficient."
+        },
+        "runtime_scalability": {
+          "score": 2,
+          "note": "Small model size enhances runtime scalability and training/inference efficiency."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Interpretability tools (e.g., attention visualization) are not explicitly mentioned yet."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Designed for real biological tasks: functional annotation, structural property prediction, mutational effect analysis."
+        }
+      }
+    }
+  }
+}
+
+
+{
+  "DPLM-2": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "DPLM-2 extends discrete diffusion-based protein models by adding modular handling of both sequences and structures."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Designed for multiple tasks including structure generation, sequence modeling, and binding interaction prediction."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Handles both protein sequences and structural data as inputs."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Directly models structure in its diffusion framework, enabling accurate structure prediction and binding interface modeling."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "Preliminary codebase available on request or planned; no fully open-source release yet."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Basic usage hints exist in the paper, but full documentation is pending."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "Some training and inference guidance is mentioned, but no ready-to-run scripts available."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Efficiency not emphasized; large models are used for training, although discrete diffusion is a relatively efficient modeling technique."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Scaling for larger proteins is discussed, but not benchmarked for high throughput scenarios."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Outputs like generated structures are interpretable by visualization, but no special interpretability tools described."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Strong task alignment: structure generation, interaction modeling, sequence completion."
+        }
+      }
+    }
+  }
+}
+{
+  "ProteinChat": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "ProteinChat uses a unified model that inputs sequences and generates textual narratives, but modularity between modalities is not explicitly described."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Applies to multiple tasks including functional description, biological role prediction, and flexible narrative generation."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Takes protein sequences and generates functional descriptions — combining biological sequence input with textual output."
+        },
+        "structural_awareness": {
+          "score": 0,
+          "note": "Does not process structural (3D) information; focuses purely on sequence and narrative generation."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "Authors mention ongoing efforts to release the model and code; partial score given for intent but no public repository yet."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Some preliminary usage examples are discussed in the preprint, but formal documentation is pending."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "Basic conceptual usage described, but no ready-to-run package available yet."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Model size and efficiency are not the main focus; assumes moderately large model sizes similar to general LLMs."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Handles sequence-to-text generation but no scalability benchmarks are provided."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 2,
+          "note": "Outputs are highly interpretable because they are natural language descriptions of protein function."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Clear biological task alignment: generating protein function narratives and biological role summaries."
+        }
+      }
+    }
+  }
+}
+
+{
+  "MetaDegron": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "MetaDegron integrates multiple featurization modules (sequence, structure, degradation motifs) in a modular, pluggable way."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Applies to diverse tasks including degradation pathway prediction and ubiquitination site identification."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Uses sequence, structural data, and degradation-specific motifs as multimodal input."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Structure information is directly used to enhance degradation prediction tasks."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 2,
+          "note": "Open-source code available with full implementation (as mentioned in the article)."
+        },
+        "documentation_quality": {
+          "score": 2,
+          "note": "Complete documentation including model architecture, installation, and usage instructions available."
+        },
+        "setup_ease": {
+          "score": 2,
+          "note": "Easy-to-use setup provided including pre-trained models and training scripts."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Efficiency is reasonable, but not a primary design goal; model is moderately sized."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Can be trained and evaluated on modest resources, but no specific scalability benchmarks discussed."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 2,
+          "note": "Outputs include interpretable features such as predicted degradation motifs and sites."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Directly aligns to real biological tasks like predicting protein degradation pathways and ubiquitination."
+        }
+      }
+    }
+  }
+}
+{
+  "FAPM": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "FAPM modularly combines protein sequence embeddings with natural language embeddings for Gene Ontology (GO) terms."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Applies to multiple function prediction tasks across catalytic activity, metabolic pathways, and GO annotation."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Integrates protein sequences, GO term embeddings, and natural language function descriptions."
+        },
+        "structural_awareness": {
+          "score": 0,
+          "note": "Structural (3D coordinate) data is not directly processed — focus is sequence + textual descriptors."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 2,
+          "note": "Code repository available with full training and inference scripts (as stated in the article)."
+        },
+        "documentation_quality": {
+          "score": 2,
+          "note": "Well-documented with instructions for dataset preparation, training, and evaluation."
+        },
+        "setup_ease": {
+          "score": 2,
+          "note": "Straightforward setup with requirements listed and examples provided."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Efficiency not a primary focus, model moderately sized for bioinformatics settings."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Scalable for batch prediction tasks, but no dedicated benchmarks for runtime scaling."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Outputs are GO term predictions; direct, but deeper interpretability (e.g., saliency maps) not emphasized."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Very strong alignment to practical biological tasks: functional annotation, catalytic prediction, metabolic pathway association."
+        }
+      }
+    }
+  }
+}
+{
+  "ProtLLM": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "ProtLLM primarily uses a unified cross-modal encoder-decoder architecture; no modular plug-in design explicitly described."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Handles various protein-centric tasks: sequence prediction, functional annotation, natural language generation."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Processes both protein sequences and natural language text, enabling cross-modal predictions."
+        },
+        "structural_awareness": {
+          "score": 0,
+          "note": "Structural (3D) information is not directly processed; focus is on sequence and text modalities."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "Authors mention release plans but no fully open-source code repository was found at review time."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Paper provides usage examples conceptually; full documentation pending."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "No official installation guide yet; assumed partially easy based on general LLM practices."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Moderately sized model; efficiency optimization not the primary focus."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Handles multi-modal tasks but no scalability benchmarks presented."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Outputs (sequences, function descriptions) are interpretable at the application level, but no special interpretability techniques mentioned."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Strong alignment to biological tasks: sequence modeling, functional property prediction, descriptive generation."
+        }
+      }
+    }
+  }
+}
+
+
+{
+  "ProtST": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "ProtST uses a unified sequence-text architecture; modularity (e.g., separate modality-specific modules) not emphasized."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Supports supervised and zero-shot predictions across various biological domains: function, disease association, protein interaction."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Explicitly uses protein sequences and biomedical textual descriptions together."
+        },
+        "structural_awareness": {
+          "score": 0,
+          "note": "No structural coordinate data involved; model focuses on sequence and text modalities."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 2,
+          "note": "Code is made publicly available (per arXiv link references)."
+        },
+        "documentation_quality": {
+          "score": 2,
+          "note": "Documentation includes training, evaluation, and fine-tuning instructions."
+        },
+        "setup_ease": {
+          "score": 2,
+          "note": "Preprocessing scripts and pretrained checkpoints simplify setup."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Moderately sized model; efficiency is reasonable but not the primary innovation focus."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Runtime is acceptable; no specific high-throughput benchmarks presented."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 1,
+          "note": "Predictions are clear (function, interaction labels), but internal model interpretability tools are not emphasized."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Strong biological task focus: functional annotation, disease association, and protein interaction prediction."
+        }
+      }
+    }
+  }
+}
+{
+  "HelixProtX": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "HelixProtX unifies protein sequences, structures, and textual descriptions into a flexible any-to-any multimodal generation framework, reflecting modular adaptability."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Supports a wide range of tasks: protein design, functional annotation, structure generation — highly transferable."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Explicitly integrates sequence, structure, and natural language descriptions as input and output modalities."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Directly models and generates 3D structures along with sequences and text."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 1,
+          "note": "Code release is mentioned but was not publicly available at the time of review."
+        },
+        "documentation_quality": {
+          "score": 1,
+          "note": "Preliminary documentation is hinted in the paper; full instructions pending code release."
+        },
+        "setup_ease": {
+          "score": 1,
+          "note": "Setup procedures not yet available; assumed moderately complex based on multimodal architecture."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Efficiency improvements are discussed conceptually, but final model size and benchmarks are not detailed."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Model is designed to handle multimodal generation tasks; scalability for large datasets not benchmarked."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 2,
+          "note": "Outputs (generated sequences, structures, descriptions) are naturally interpretable across modalities."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Aligned for key biological tasks: protein design, function prediction, structure generation."
+        }
+      }
+    }
+  }
+}
+{
+  "Prot2Text": {
+    "adaptability": {
+      "weight": 20,
+      "subfeatures": {
+        "modular_architecture": {
+          "score": 2,
+          "note": "Prot2Text integrates Graph Neural Networks (GNNs) with Large Language Models (LLMs) in a modular fusion architecture."
+        },
+        "transferability": {
+          "score": 2,
+          "note": "Applies to diverse tasks: free-text functional description generation, enzyme classification, molecular function prediction."
+        }
+      }
+    },
+    "bioinformatics_relevance": {
+      "weight": 30,
+      "subfeatures": {
+        "biological_input_modalities": {
+          "score": 2,
+          "note": "Uses protein sequence, structural graphs, and natural language descriptions as inputs."
+        },
+        "structural_awareness": {
+          "score": 2,
+          "note": "Processes structure through graph-based encodings before feeding into the language model."
+        }
+      }
+    },
+    "usability": {
+      "weight": 15,
+      "subfeatures": {
+        "code_availability": {
+          "score": 2,
+          "note": "Code and models are released publicly along with the paper."
+        },
+        "documentation_quality": {
+          "score": 2,
+          "note": "Well-documented repository with setup guides, pretrained model checkpoints, and usage examples."
+        },
+        "setup_ease": {
+          "score": 2,
+          "note": "Straightforward setup using provided scripts and environment files."
+        }
+      }
+    },
+    "computational_efficiency": {
+      "weight": 15,
+      "subfeatures": {
+        "parameter_count_efficiency": {
+          "score": 1,
+          "note": "Combines GNNs and LLMs; model size is moderately large, but no special optimization for parameter count."
+        },
+        "runtime_scalability": {
+          "score": 1,
+          "note": "Efficient for moderate datasets; large-scale scalability not benchmarked."
+        }
+      }
+    },
+    "output_suitability": {
+      "weight": 20,
+      "subfeatures": {
+        "output_interpretability": {
+          "score": 2,
+          "note": "Outputs are free-text function descriptions, directly interpretable."
+        },
+        "task_alignment": {
+          "score": 2,
+          "note": "Highly aligned to biological tasks: functional annotation, enzyme classification, molecular function generation."
+        }
+      }
+    }
+  }
+}
+
+}
