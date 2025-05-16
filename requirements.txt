@@ -1,1 +1,34 @@
+# ABUS Folder Structure
 
+ABUS-Scoring/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── abus/
+│   ├── __init__.py
+│   ├── core/
+│   │   ├── scoring_engine.py        # Scoring logic
+│   │   ├── score_calculator.py      # Normalization, weighted aggregation
+│   │   ├── evaluator.py             # Evaluation utils (e.g., rubric logic)
+│   │   └── recommender.py           # Feature-based recommender system
+│   ├── data/
+│   │   ├── model_scores.json        # Main JSON database of model scores
+│   │   └── category_weights.json    # Configurable weights for each category
+│   ├── utils/
+│   │   ├── parser.py                # Load and validate JSON inputs
+│   │   └── visualizer.py            # Radar/bar/heatmap plot utilities
+│   └── interfaces/
+│       ├── cli.py                   # Command-line interface for scoring/recommending
+│       └── web_app.py               # (Optional) Streamlit or Flask UI
+├── tests/
+│   ├── test_scoring_engine.py
+│   ├── test_score_calculator.py
+│   └── test_recommender.py
+├── notebooks/
+│   └── ABUS_Demo.ipynb              # Colab-compatible walkthrough
+└── docs/
+    └── methodology.md               # Methodology summary (from your LaTeX)
+
+
+
+# Requirements:
