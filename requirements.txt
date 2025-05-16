@@ -32,3 +32,22 @@ ABUS-Scoring/
 
 
 # Requirements:
+
+# Core
+numpy
+pandas
+
+# Visualization
+matplotlib
+seaborn
+
+# Web UI (Optional, for Step 5)
+# flask
+
+# Data validation/parsing
+pydantic
+
+# For interactive notebooks (Step 5 or demo)
+Google Colab
+
+
