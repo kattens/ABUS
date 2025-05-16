@@ -37,6 +37,11 @@ ABUS-Scoring/
 numpy
 pandas
 
+# LLM
+Hugging face
+transformers
+
+
 # Visualization
 matplotlib
 seaborn
