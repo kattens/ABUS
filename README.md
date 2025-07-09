@@ -20,6 +20,8 @@ The **Adaptability Bioinformatics Usability Score (ABUS)** is a structured frame
 * Receive personalized model recommendations for biological tasks
 
 ---
+![abus pipeline](https://github.com/user-attachments/assets/53daf0e5-24b2-469f-bdf0-5112e5f9d4f5)
+
 
 ## 🧪 Step 1: Build the ABUS Scoring Database
 
