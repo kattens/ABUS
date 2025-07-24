@@ -230,6 +230,142 @@ Each subfeature is evaluated manually using:
 | **HelixProtX**  | Best for modular input/output handling                |
 | **Prot2Text**   | GNN-LLM fusion; interpretable and documented          |
 
+
+
+
+
+---
+
+
+🧬 Full Feature Taxonomy
+
+Below is the complete list of features scored under each ABUS category. These features form the foundation of both the scoring system and the recommender engine.
+🔬 Bioinformatics Relevance Features
+
+These capture the biological and multimodal relevance of a model.
+
+    sequence_input: Boolean/Integer
+
+    structure_input: Boolean/Integer
+
+    evolutionary_input: Boolean/Integer
+
+    functional_annotation_input: Boolean/Integer
+
+    natural_language_input: Boolean/Integer
+
+    omics_data_input: Boolean/Integer
+
+    structure_prediction: Boolean/Integer
+
+    function_prediction: Boolean/Integer
+
+    interaction_prediction: Boolean/Integer
+
+    sequence_generation: Boolean/Integer
+
+    multimodal_image_protein: Boolean/Integer
+
+    multimodal_text_protein: Boolean/Integer
+
+    sequence_structure_integration: Boolean/Integer
+
+    sequence_text_integration: Boolean/Integer
+
+    sequence_evolution_integration: Boolean/Integer
+
+    graph_multimodal: Boolean/Integer
+
+    rag_integration: Boolean/Integer
+
+    tool_usage: Boolean/Integer
+
+    agentic_planning: Boolean/Integer
+
+🛠️ Adaptability Features
+
+These evaluate how easily a model can be extended, reused, or fine-tuned.
+
+    peft_support: Boolean/Integer
+
+    fine_tuning_scripts: Boolean/Integer
+
+    model_modularity: Boolean/Integer
+
+    pre_trained_checkpoints: Boolean/Integer
+
+    open_source_license: Boolean/Integer
+
+    generalization_capability: Boolean/Integer
+
+🧑‍💻 Usability Features
+
+These reflect how easy the model is to use for real researchers and developers.
+
+    documentation_quality: Integer (Score)
+
+    code_availability: Boolean/Integer
+
+    community_support: Integer (Score)
+
+    installation_complexity: Integer (Score)
+
+    api_library_integration: Boolean/Integer
+
+    pre_trained_model_availability: Boolean/Integer
+
+⚡ Computational Efficiency Features
+
+These describe the hardware demands and scalability of the model.
+
+    model_size_params: Integer
+
+    storage_memory_requirements: Text (Score/Description)
+
+    fine_tuning_compute_cost: Text (Score/Description)
+
+    inference_compute_cost: Text (Score/Description)
+
+    hardware_compatibility: Text (Score/Description)
+
+    energy_consumption: Text (Score/Description)
+
+📤 Output Suitability Features
+
+These ensure the model’s outputs are useful, interpretable, and fit the task.
+
+    prediction_type_alignment: Boolean/Integer
+
+    benchmark_performance: Text (Score/Description)
+
+    interpretability: Integer (Score)
+
+    output_granularity: Integer (Score)
+
+    output_format_compatibility: Boolean/Integer
+
+    uncertainty_quantification: Boolean/Integer
+
+⚖️ Ethical Considerations
+
+These capture issues around fairness, transparency, and privacy.
+
+    bias_fairness: Text (Score/Description)
+
+    data_privacy: Text (Score/Description)
+
+    transparency_accountability: Text (Score/Description)
+
+🔢 Scoring Formula
+ABUSScore=Σ(categoryweight×(avgsubfeaturescore/2))NormalizedABUS=(ABUSScore/100)×100
+ABUSScore=Σ(categoryw​eight×(avgsubfeaturescore/2))NormalizedABUS=(ABUSScore/100)×100
+
+This results in a normalized 0–100 score per model.
+
+
+
+
+
 ---
 
 ## 📎 Citation & Acknowledgments
