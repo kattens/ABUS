@@ -1,35 +1,33 @@
 # tools/check_db.py
-"""
-Confirms which SQLite file is used, lists tables, and shows row counts.
-Run:  python tools/check_db.py
-"""
 import os
-from dotenv import load_dotenv
-from sqlmodel import create_engine
-from sqlalchemy import text
+from dotenv import load_dotenv, find_dotenv
+from sqlmodel import create_engine, SQLModel
+from sqlalchemy import text, func, select
 
-load_dotenv()
+# Load .env robustly even if cwd is different
+load_dotenv(find_dotenv())
+
 url = os.getenv("DATABASE_URL", "sqlite:///./abus.db")
-print(f"DATABASE_URL = {url}")
+print("DATABASE_URL =", url)
 
-# Build engine exactly like api/db.py (works for sqlite path issues)
+# Build engine like api/db.py
 connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
 engine = create_engine(url, echo=False, connect_args=connect_args)
 
 with engine.connect() as con:
-    # What file is SQLite actually opening?
+    # Show which file SQLite opened
     if url.startswith("sqlite"):
-        fp = con.execute(text("PRAGMA database_list;")).fetchall()
-        print("SQLite database_list:", fp)
+        rows = con.execute(text("PRAGMA database_list;")).fetchall()
+        print("SQLite database_list:", rows)
 
     # List tables
     tables = con.execute(text("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;")).fetchall()
     print("Tables:", [t[0] for t in tables])
 
-    # Row counts (if tables exist)
-    for t in ["models", "categories", "subcategories", "scores"]:
+    # Count rows if tables exist
+    for t in ("models", "categories", "subcategories", "scores"):
         try:
-            c = con.execute(text(f"SELECT COUNT(*) FROM {t};")).scalar_one()
-            print(f"{t}: {c} rows")
+            n = con.execute(text(f"SELECT COUNT(*) FROM {t};")).scalar_one()
+            print(f"{t}: {n} rows")
         except Exception as e:
-            pass
+            print(f"{t}: (no table) {e}")

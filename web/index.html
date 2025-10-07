@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>ABUS – BioAI Model Browser</title>
+    <meta name="description" content="Score, browse, and compare BioAI models with weighted categories and detailed subfeatures."/>
+    <link rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <!-- Sticky Nav -->
+    <header class="nav">
+      <div class="nav-inner wrap">
+        <a href="#top" class="brand">ABUS</a>
+        <nav class="links">
+          <a href="#overview">Overview</a>
+          <a href="#features">Features</a>
+          <a href="#browser">Models</a>
+          <a href="#compute">Compute</a>
+        </nav>
+        <a class="cta" href="#browser">Open Browser</a>
+      </div>
+    </header>
+
+    <!-- Hero (first screen) -->
+    <main id="top" class="hero fade-in">
+      <div class="hero-wrap">
+        <h1>BioAI Model Browser</h1>
+        <p class="lead">
+          Explore protein-focused AI models with structured, weighted categories and rich subfeature notes.
+          Scroll to discover, or jump straight into the interactive browser.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#browser">Open Model Browser</a>
+          <a class="btn" href="#features">See Features</a>
+        </div>
+      </div>
+      <div class="hero-orb orb-a"></div>
+      <div class="hero-orb orb-b"></div>
+    </main>
+
+    <!-- Overview -->
+    <section id="overview" class="section fade-in">
+      <div class="wrap">
+        <div class="two-col">
+          <div class="col">
+            <h2>A scalable scoring surface for BioAI</h2>
+            <p class="muted">
+              ABUS turns JSON curation into a structured SQL backend with a clean API and a modern UI.
+              Scores, weights, and notes are normalized so you can compare, compute, and extend—backed by FastAPI.
+            </p>
+          </div>
+          <div class="col">
+            <div class="stat-grid stagger">
+              <div class="stat"><div class="stat-num">5</div><div class="stat-label">Models</div></div>
+              <div class="stat"><div class="stat-num">5</div><div class="stat-label">Categories</div></div>
+              <div class="stat"><div class="stat-num">11</div><div class="stat-label">Subfeatures</div></div>
+              <div class="stat"><div class="stat-num">55</div><div class="stat-label">Scores</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section fade-in">
+      <div class="wrap">
+        <h2>Built for clarity and growth</h2>
+        <div class="card-grid stagger">
+          <article class="card"><h3>Normalized Data</h3><p class="muted">Models, categories, subfeatures, weights, and notes mapped to SQL for consistency and scale.</p><code class="tag">SQLModel</code></article>
+          <article class="card"><h3>Fast API</h3><p class="muted">Simple endpoints to list models, fetch full profiles, and run compute tasks.</p><code class="tag">FastAPI</code></article>
+          <article class="card"><h3>Future-Proof</h3><p class="muted">Swap SQLite → Postgres, add CRUD and auth, drop in agents when you’re ready.</p><code class="tag">Alembic / Postgres</code></article>
+          <article class="card"><h3>Modern UI</h3><p class="muted">Animated sections, sticky nav, smooth scrolling, and an interactive browser.</p><code class="tag">Vanilla JS + CSS</code></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Browser -->
+    <section id="browser" class="section fade-in">
+      <div class="wrap">
+        <h2>What models would you like to look?</h2>
+        <p class="muted">Pick a model to load its categories, weights, and detailed subfeatures.</p>
+
+        <div class="browser panel">
+          <div class="controls">
+            <label for="modelSelect" class="muted">Model</label>
+            <select id="modelSelect" aria-label="Model name"></select>
+            <button id="loadBtn" type="button" class="btn primary">Load details</button>
+            <span id="status" class="pill">status: idle</span>
+          </div>
+
+          <div id="modelView" class="model-grid" aria-live="polite"></div>
+
+          <details class="raw">
+            <summary class="muted">Raw JSON (debug)</summary>
+            <pre id="raw"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compute -->
+    <section id="compute" class="section fade-in">
+      <div class="wrap">
+        <h2>Compute (demo)</h2>
+        <p class="muted">Calls <code>/api/compute?a=&amp;b=</code> on your backend.</p>
+        <form id="computeForm" class="controls">
+          <input name="a" id="a" type="number" step="any" placeholder="a" required/>
+          <input name="b" id="b" type="number" step="any" placeholder="b" required/>
+          <button type="submit" class="btn">Compute</button>
+          <span id="computeStatus" class="pill">result: n/a</span>
+        </form>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="wrap">
+        <div class="foot-left">ABUS</div>
+        <nav class="foot-links">
+          <a href="#overview">Overview</a>
+          <a href="#features">Features</a>
+          <a href="#browser">Models</a>
+          <a href="#compute">Compute</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="motion.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
