@@ -1,4 +1,4 @@
-### 🧬 ABUS: Adaptability, Bioinformatics, and Usability Score
+### ABUS: Adaptability, Bioinformatics, and Usability Score
 
 **ABUS** is a structured scoring and recommendation framework designed to evaluate **Protein Language Models (PLMs)** based on their:
 
@@ -11,7 +11,7 @@ The ABUS framework provides a fair, interpretable, and feature-driven scoring sy
 ![material](https://github.com/user-attachments/assets/1a1b83b6-beae-45e9-b5dd-856d8a0d33e1)
 
 
-## 🎯 Objective
+## Objective
 
 The **Adaptability Bioinformatics Usability Score (ABUS)** is a structured framework for evaluating and recommending Protein Language Models (pLMs) with multimodal capabilities. It enables researchers to:
 
@@ -23,9 +23,9 @@ The **Adaptability Bioinformatics Usability Score (ABUS)** is a structured frame
 ![abus pipeline](https://github.com/user-attachments/assets/53daf0e5-24b2-469f-bdf0-5112e5f9d4f5)
 
 
-## 🧪 Step 1: Build the ABUS Scoring Database
+## Step 1: Build the ABUS Scoring Database
 
-### 📊 Category Structure
+### Category Structure
 
 Each model is scored across five weighted categories:
 
@@ -45,7 +45,7 @@ Each subfeature is scored on a **0–2** scale:
 
 Scores include **justification notes** (e.g., from GitHub, papers, benchmarks).
 
-### 🔢 Scoring Formula
+### Scoring Formula
 
 ```math
 ABUSScore = Σ (category_weight × (avg subfeature score / 2))
@@ -55,7 +55,7 @@ Normalized ABUS = (ABUSScore / 100) × 100
 
 This results in a normalized **0–100** score per model.
 
-### 🧾 JSON Format Example
+### JSON Format Example
 
 ```json
 {
@@ -73,7 +73,7 @@ This results in a normalized **0–100** score per model.
 }
 ```
 
-### 🛠️ Implementation Notes
+### Implementation Notes
 
 * Python script: `abus_scoring_engine.py`
 * Data sources: Peer-reviewed papers, GitHub, model cards
@@ -81,11 +81,11 @@ This results in a normalized **0–100** score per model.
 
 ---
 
-## 🤖 Step 2: Feature-Aware Recommender System
+## Step 2: Feature-Aware Recommender System
 
 This is a **content-based recommender system** that matches user-defined filters to the most relevant pLMs.
 
-### ⚙️ How It Works
+### How It Works
 
 Users submit a feature query, such as:
 
@@ -101,7 +101,7 @@ The system:
 * Filters models satisfying all constraints
 * Ranks results by ABUS or custom scores
 
-### 📐 Mathematical Framing
+### Mathematical Framing
 
 Given a query vector `q` and models with feature vectors `f_i`, return:
 
@@ -109,7 +109,7 @@ Given a query vector `q` and models with feature vectors `f_i`, return:
 Top-k { m_i ∈ M | f_i[j] satisfies q[j] }, ranked by ABUS score
 ```
 
-### ✅ Benefits
+### Benefits
 
 * Explainable, feature-based filtering
 * Scalable to top-k queries or similarity metrics
@@ -117,7 +117,7 @@ Top-k { m_i ∈ M | f_i[j] satisfies q[j] }, ranked by ABUS score
 
 ---
 
-## 🔭 Future Steps
+## Future Steps
 
 ### Step 3: Expand Model Coverage
 
@@ -153,7 +153,7 @@ Top-k { m_i ∈ M | f_i[j] satisfies q[j] }, ranked by ABUS score
 
 ---
 
-## 📐 Scoring System Explained
+## Scoring System Explained
 
 Each pLM is scored using a normalized 0–100 formula based on:
 
@@ -161,7 +161,7 @@ Each pLM is scored using a normalized 0–100 formula based on:
 * Equal or custom subfeature weights
 * Fixed category weights (e.g., Usability = 15%)
 
-### 🧮 Example: Scoring "Usability"
+### Example: Scoring "Usability"
 
 | Subfeature              | Score | Weight |
 | ----------------------- | ----- | ------ |
@@ -186,9 +186,9 @@ Each pLM is scored using a normalized 0–100 formula based on:
 
 ---
 
-## 📊 Scoring Methodology
+## Scoring Methodology
 
-### 🎓 Manual Scoring Process
+### Manual Scoring Process
 
 Each subfeature is evaluated manually using:
 
@@ -205,7 +205,7 @@ Each subfeature is evaluated manually using:
 * Model cards/documentation
 * Benchmarks and leaderboards
 
-### 🧾 Example Justification
+### Example Justification
 
 > "Supports sequence, structure, and evolutionary inputs."
 > → `biological_input_modalities` = 2
@@ -213,7 +213,7 @@ Each subfeature is evaluated manually using:
 
 ---
 
-## 📘 Model Summaries
+## Model Summaries
 
 | Model           | Highlights                                            |
 | --------------- | ----------------------------------------------------- |
@@ -230,17 +230,12 @@ Each subfeature is evaluated manually using:
 | **HelixProtX**  | Best for modular input/output handling                |
 | **Prot2Text**   | GNN-LLM fusion; interpretable and documented          |
 
-
-
-
-
 ---
 
-
-🧬 Full Feature Taxonomy
+Full Feature Taxonomy
 
 Below is the complete list of features scored under each ABUS category. These features form the foundation of both the scoring system and the recommender engine.
-🔬 Bioinformatics Relevance Features
+Bioinformatics Relevance Features
 
 These capture the biological and multimodal relevance of a model.
 
@@ -282,7 +277,7 @@ These capture the biological and multimodal relevance of a model.
 
     agentic_planning: Boolean/Integer
 
-🛠️ Adaptability Features
+Adaptability Features
 
 These evaluate how easily a model can be extended, reused, or fine-tuned.
 
@@ -298,7 +293,7 @@ These evaluate how easily a model can be extended, reused, or fine-tuned.
 
     generalization_capability: Boolean/Integer
 
-🧑‍💻 Usability Features
+Usability Features
 
 These reflect how easy the model is to use for real researchers and developers.
 
@@ -314,7 +309,7 @@ These reflect how easy the model is to use for real researchers and developers.
 
     pre_trained_model_availability: Boolean/Integer
 
-⚡ Computational Efficiency Features
+Computational Efficiency Features
 
 These describe the hardware demands and scalability of the model.
 
@@ -330,7 +325,7 @@ These describe the hardware demands and scalability of the model.
 
     energy_consumption: Text (Score/Description)
 
-📤 Output Suitability Features
+Output Suitability Features
 
 These ensure the model’s outputs are useful, interpretable, and fit the task.
 
@@ -346,7 +341,7 @@ These ensure the model’s outputs are useful, interpretable, and fit the task.
 
     uncertainty_quantification: Boolean/Integer
 
-⚖️ Ethical Considerations
+Ethical Considerations
 
 These capture issues around fairness, transparency, and privacy.
 
@@ -356,22 +351,67 @@ These capture issues around fairness, transparency, and privacy.
 
     transparency_accountability: Text (Score/Description)
 
-🔢 Scoring Formula
+Scoring Formula
 ABUSScore=Σ(categoryweight×(avgsubfeaturescore/2))NormalizedABUS=(ABUSScore/100)×100
 ABUSScore=Σ(categoryw​eight×(avgsubfeaturescore/2))NormalizedABUS=(ABUSScore/100)×100
 
 This results in a normalized 0–100 score per model.
 
-
-
-
-
 ---
 
-## 📎 Citation & Acknowledgments
+## Citation & Acknowledgments
 
 If you use ABUS in your research, please cite this repository and acknowledge:
 
 > **Computational Bio Lab** & **Machine Psychology Lab**
 > **Presenter**: Kattayun Ensafi
 > **Professors**: Daniel Haehn, Nurit Haspel
+
+
+## Project Architecture:
+
+ABUS/
+├── README.md
+├── .gitignore
+├── requirements.txt                 # core libs for scoring + API (see below)
+├── .env                             # DATABASE_URL=sqlite:///./abus.db
+├── abus/
+│   ├── __init__.py
+│   ├── core/
+│   │   ├── scoring_engine.py        # Scoring logic (unchanged)
+│   │   ├── score_calculator.py      # Normalization, weighted aggregation
+│   │   ├── evaluator.py             # Rubric/eval utils
+│   │   └── recommender.py           # Feature-based recommender
+│   ├── data/
+│   │   ├── model_scores.json        # Seed/backup only (not used at runtime)
+│   │   └── category_weights.json    # Weights (can also move to SQL later)
+│   ├── utils/
+│   │   ├── parser.py                # JSON loader/validator (still useful for seed/export)
+│   │   └── visualizer.py            # Plots (radar/bar/heatmap)
+│   └── interfaces/
+│       ├── cli.py                   # CLI for scoring/recommending
+│       └── web_app.py               # (optional: Streamlit/Flask demo; keep if you like)
+│
+├── api/                             # New: production API (FastAPI)
+│   ├── __init__.py
+│   ├── app.py                       # FastAPI app with routes
+│   ├── db.py                        # SQLModel engine/session (reads .env)
+│   ├── db_models.py                 # SQL tables: Model/Category/Subcategory/Score
+│   ├── repositories.py              # Thin data-access layer (optional but clean)
+│   ├── seed_from_json.py            # One-shot: import abus/data/model_scores.json → SQL
+│   ├── export_to_json.py            # Optional: dump SQL → JSON
+│   ├── schema.py                    # Pydantic I/O models (request/response)
+│   └── services/
+│       └── math_engine.py           # Your math formula endpoint
+│
+├── web/                             # New: tiny frontend (HTMX)
+│   └── index.html                   # Chat bar + model lookup + compute
+│
+├── tests/
+│   ├── test_scoring_engine.py
+│   ├── test_score_calculator.py
+│   └── test_recommender.py
+├── notebooks/
+│   └── ABUS_Demo.ipynb
+└── docs/
+    └── methodology.md

@@ -1,59 +1,45 @@
-# ABUS Folder Structure
-
-
-ABUS-Scoring/
+ABUS/
 ├── README.md
-├── requirements.txt
 ├── .gitignore
+├── requirements.txt                 # core libs for scoring + API (see below)
+├── .env                             # DATABASE_URL=sqlite:///./abus.db
 ├── abus/
 │   ├── __init__.py
 │   ├── core/
-│   │   ├── scoring_engine.py        # Scoring logic
+│   │   ├── scoring_engine.py        # Scoring logic (unchanged)
 │   │   ├── score_calculator.py      # Normalization, weighted aggregation
-│   │   ├── evaluator.py             # Evaluation utils (e.g., rubric logic)
-│   │   └── recommender.py           # Feature-based recommender system
+│   │   ├── evaluator.py             # Rubric/eval utils
+│   │   └── recommender.py           # Feature-based recommender
 │   ├── data/
-│   │   ├── model_scores.json        # Main JSON database of model scores
-│   │   └── category_weights.json    # Configurable weights for each category
+│   │   ├── model_scores.json        # Seed/backup only (not used at runtime)
+│   │   └── category_weights.json    # Weights (can also move to SQL later)
 │   ├── utils/
-│   │   ├── parser.py                # Load and validate JSON inputs
-│   │   └── visualizer.py            # Radar/bar/heatmap plot utilities
+│   │   ├── parser.py                # JSON loader/validator (still useful for seed/export)
+│   │   └── visualizer.py            # Plots (radar/bar/heatmap)
 │   └── interfaces/
-│       ├── cli.py                   # Command-line interface for scoring/recommending
-│       └── web_app.py               # (Optional) Streamlit or Flask UI
+│       ├── cli.py                   # CLI for scoring/recommending
+│       └── web_app.py               # (optional: Streamlit/Flask demo; keep if you like)
+│
+├── api/                             # New: production API (FastAPI)
+│   ├── __init__.py
+│   ├── app.py                       # FastAPI app with routes
+│   ├── db.py                        # SQLModel engine/session (reads .env)
+│   ├── db_models.py                 # SQL tables: Model/Category/Subcategory/Score
+│   ├── repositories.py              # Thin data-access layer (optional but clean)
+│   ├── seed_from_json.py            # One-shot: import abus/data/model_scores.json → SQL
+│   ├── export_to_json.py            # Optional: dump SQL → JSON
+│   ├── schema.py                    # Pydantic I/O models (request/response)
+│   └── services/
+│       └── math_engine.py           # Your math formula endpoint
+│
+├── web/                             # New: tiny frontend (HTMX)
+│   └── index.html                   # Chat bar + model lookup + compute
+│
 ├── tests/
 │   ├── test_scoring_engine.py
 │   ├── test_score_calculator.py
 │   └── test_recommender.py
 ├── notebooks/
-│   └── ABUS_Demo.ipynb              # Colab-compatible walkthrough
+│   └── ABUS_Demo.ipynb
 └── docs/
-    └── methodology.md               # Methodology summary (from your LaTeX)
-
-
-
-# Requirements:
-
-# Core
-numpy
-pandas
-
-# LLM
-Hugging face
-transformers
-
-
-# Visualization
-matplotlib
-seaborn
-
-# Web UI (Optional, for Step 5)
-# flask
-
-# Data validation/parsing
-pydantic
-
-# For interactive notebooks (Step 5 or demo)
-Google Colab
-
-
+    └── methodology.md
