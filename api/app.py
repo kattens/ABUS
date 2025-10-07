@@ -1,21 +1,29 @@
-# api/app.py
 """
-ABUS API
-- GET  /api/models                 -> list model names
-- GET  /api/models/{name}          -> {category: {subcategory: score}}
-- GET  /api/models/{name}/full     -> {category: {weight, subfeatures:{name:{score,note}}}}
-- POST /api/compute?a=&b=          -> demo math endpoint
-- GET  /                           -> redirects to /docs
-- GET  /health                     -> "ok"
+FastAPI app exposing:
+- GET /api/models                 -> list of model names
+- GET /api/models/{name}          -> {category: {subcategory: score}}
+- GET /api/models/{name}/full     -> includes weights + notes
+- GET /api/score/{name}           -> computed per-category averages + overall
+- POST /api/models/upsert         -> upsert model with categories/subfeatures
+- POST /api/compute?a=..&b=..     -> demo math endpoint
+- GET /health                     -> health check
+- GET /                           -> redirect to docs
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse, PlainTextResponse
+from fastapi.responses import RedirectResponse
 from sqlmodel import select
+
 from api.db import init_db, get_session
 from api.db_models import Model, Category, Subcategory, Score, ModelCategory
+from services.scoring_service import (
+    compute_model_scores,
+    get_model_full as svc_get_model_full,
+    upsert_model_from_payload,
+)
 
+# App setup
 app = FastAPI(title="ABUS API", version="0.1.0")
 
 # Allow local static page to call the API
@@ -29,23 +37,21 @@ app.add_middleware(
 # Ensure tables exist (safe if already created)
 init_db()
 
-
-@app.get("/", include_in_schema=False)
+# Utilities
+@app.get("/")
 def root():
     return RedirectResponse(url="/docs")
 
-
-@app.get("/health", response_class=PlainTextResponse, include_in_schema=False)
+@app.get("/health")
 def health():
-    return "ok"
+    return {"ok": True}
 
-
+# Read-only endpoints
 @app.get("/api/models")
 def list_models():
     with get_session() as s:
         names = [m.name for m in s.exec(select(Model)).all()]
     return {"models": sorted(names)}
-
 
 @app.get("/api/models/{name}")
 def get_model(name: str):
@@ -63,40 +69,36 @@ def get_model(name: str):
             out.setdefault(cat.name, {})[sub.name] = sc.value
         return out
 
-
 @app.get("/api/models/{name}/full")
 def get_model_full(name: str):
     with get_session() as s:
-        m = s.exec(select(Model).where(Model.name == name)).first()
-        if not m:
-            raise HTTPException(404, f"Model '{name}' not found")
+        try:
+            return svc_get_model_full(s, name)
+        except ValueError as e:
+            raise HTTPException(404, str(e))
 
-        # Collect per-category weight for this model
-        cat_weights = {}
-        for mc in s.exec(select(ModelCategory).where(ModelCategory.model_id == m.id)).all():
-            cat_weights[mc.category_id] = mc.weight
-
-        # Build: {category: {weight, subfeatures:{sub:{score, note}}}}
-        out = {}
-        scores = s.exec(select(Score).where(Score.model_id == m.id)).all()
-        for sc in scores:
-            sub = s.get(Subcategory, sc.subcategory_id)
-            cat = s.get(Category, sub.category_id)
-            if cat.name not in out:
-                out[cat.name] = {
-                    "weight": cat_weights.get(cat.id, 0.0),
-                    "subfeatures": {}
-                }
-            out[cat.name]["subfeatures"][sub.name] = {
-                "score": sc.value,
-                "note": sc.note
-            }
-        return out
-
+# Compute/scoring
+@app.get("/api/score/{name}")
+def get_score(name: str):
+    with get_session() as s:
+        try:
+            return compute_model_scores(s, name)
+        except ValueError as e:
+            raise HTTPException(404, str(e))
 
 @app.post("/api/compute")
 def compute(a: float, b: float):
-    # Placeholder math; replace with your real logic
+    # Placeholder math; swap in your real formula when ready
     if a == 0 or b == 0:
         return {"result": 0.0}
     return {"result": 2 * (a * b) / (a + b)}  # harmonic-mean style
+
+# Upsert (create/update a full model via payload)
+@app.post("/api/models/upsert")
+def models_upsert(payload: dict = Body(...)):
+    with get_session() as s, s.begin():
+        try:
+            model_name = upsert_model_from_payload(s, payload)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+        return {"ok": True, "name": model_name}
