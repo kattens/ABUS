@@ -1,45 +1,18 @@
-ABUS/
-├── README.md
-├── .gitignore
-├── requirements.txt                 # core libs for scoring + API (see below)
-├── .env                             # DATABASE_URL=sqlite:///./abus.db
-├── abus/
-│   ├── __init__.py
-│   ├── core/
-│   │   ├── scoring_engine.py        # Scoring logic (unchanged)
-│   │   ├── score_calculator.py      # Normalization, weighted aggregation
-│   │   ├── evaluator.py             # Rubric/eval utils
-│   │   └── recommender.py           # Feature-based recommender
-│   ├── data/
-│   │   ├── model_scores.json        # Seed/backup only (not used at runtime)
-│   │   └── category_weights.json    # Weights (can also move to SQL later)
-│   ├── utils/
-│   │   ├── parser.py                # JSON loader/validator (still useful for seed/export)
-│   │   └── visualizer.py            # Plots (radar/bar/heatmap)
-│   └── interfaces/
-│       ├── cli.py                   # CLI for scoring/recommending
-│       └── web_app.py               # (optional: Streamlit/Flask demo; keep if you like)
-│
-├── api/                             # New: production API (FastAPI)
-│   ├── __init__.py
-│   ├── app.py                       # FastAPI app with routes
-│   ├── db.py                        # SQLModel engine/session (reads .env)
-│   ├── db_models.py                 # SQL tables: Model/Category/Subcategory/Score
-│   ├── repositories.py              # Thin data-access layer (optional but clean)
-│   ├── seed_from_json.py            # One-shot: import abus/data/model_scores.json → SQL
-│   ├── export_to_json.py            # Optional: dump SQL → JSON
-│   ├── schema.py                    # Pydantic I/O models (request/response)
-│   └── services/
-│       └── math_engine.py           # Your math formula endpoint
-│
-├── web/                             # New: tiny frontend (HTMX)
-│   └── index.html                   # Chat bar + model lookup + compute
-│
-├── tests/
-│   ├── test_scoring_engine.py
-│   ├── test_score_calculator.py
-│   └── test_recommender.py
-├── notebooks/
-│   └── ABUS_Demo.ipynb
-└── docs/
-    └── methodology.md
+# Core
+numpy
+pandas
+pydantic
+
+# API + DB
+fastapi
+uvicorn[standard]
+sqlmodel
+SQLAlchemy
+python-dotenv
+
+# (Optional) LLMs later
+transformers
+
+# Visualization
+matplotlib
+seaborn

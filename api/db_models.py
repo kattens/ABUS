@@ -1,0 +1,34 @@
+# api/db_models.py
+
+"""
+Defines the database schema for ABUS using SQLModel (built on SQLAlchemy + Pydantic).
+Each class below becomes a table in your SQLite database.
+"""
+
+from typing import Optional
+from sqlmodel import SQLModel, Field, UniqueConstraint
+
+class Model(SQLModel, table=True):
+    __tablename__ = "models"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True, unique=True)
+
+class Category(SQLModel, table=True):
+    __tablename__ = "categories"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True, unique=True)
+
+class Subcategory(SQLModel, table=True):
+    __tablename__ = "subcategories"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    category_id: int = Field(foreign_key="categories.id")
+    __table_args__ = (UniqueConstraint("category_id", "name", name="uq_subcat_per_category"),)
+
+class Score(SQLModel, table=True):
+    __tablename__ = "scores"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    model_id: int = Field(foreign_key="models.id", index=True)
+    subcategory_id: int = Field(foreign_key="subcategories.id", index=True)
+    value: float
+    __table_args__ = (UniqueConstraint("model_id", "subcategory_id", name="uq_model_subcategory"),)
