@@ -415,3 +415,20 @@ ABUS/
 │   └── ABUS_Demo.ipynb
 └── docs/
     └── methodology.md
+
+
+## Quick local run:
+
+cd /Users/kattayunensafitakaldani/Documents/ABUS/ABUS
+
+conda activate abus_env
+
+uvicorn api.app:app --reload --port 8000
+
+
+----
+
+cd /Users/kattayunensafitakaldani/Documents/ABUS/ABUS/web
+
+python -m http.server 5500
+
