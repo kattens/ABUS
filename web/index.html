@@ -99,19 +99,51 @@
       </div>
     </section>
 
-    <!-- Compute -->
+    <!-- Ingest & Score -->
     <section id="compute" class="section fade-in">
       <div class="wrap">
-        <h2>Compute (demo)</h2>
-        <p class="muted">Calls <code>/api/compute?a=&amp;b=</code> on your backend.</p>
-        <form id="computeForm" class="controls">
-          <input name="a" id="a" type="number" step="any" placeholder="a" required/>
-          <input name="b" id="b" type="number" step="any" placeholder="b" required/>
-          <button type="submit" class="btn">Compute</button>
-          <span id="computeStatus" class="pill">result: n/a</span>
+        <h2>Ingest & Score a Paper</h2>
+        <p class="muted">
+          Paste paper text and get 0/1/2 subfeature scores with notes as ABUS JSON.
+          You can preview the JSON or save it to the database as a new model.
+        </p>
+
+        <form id="ingestForm" class="panel" style="display:grid; gap:12px">
+          <div class="controls">
+            <label for="ingestName" class="muted">Model name</label>
+            <input id="ingestName" name="name" type="text" placeholder="e.g., PaperModelX" required />
+          </div>
+
+          <details>
+            <summary class="muted">Category weights (optional)</summary>
+            <div class="controls" style="margin-top:8px; flex-wrap:wrap; gap:8px">
+              <input class="wgt" data-cat="adaptability" type="number" step="any" placeholder="adaptability (e.g., 20)" />
+              <input class="wgt" data-cat="bioinformatics_relevance" type="number" step="any" placeholder="bioinformatics_relevance (e.g., 30)" />
+              <input class="wgt" data-cat="usability" type="number" step="any" placeholder="usability (e.g., 15)" />
+              <input class="wgt" data-cat="computational_efficiency" type="number" step="any" placeholder="computational_efficiency (e.g., 15)" />
+              <input class="wgt" data-cat="output_suitability" type="number" step="any" placeholder="output_suitability (e.g., 20)" />
+            </div>
+          </details>
+
+          <div class="controls" style="flex-direction:column; align-items:stretch">
+            <label for="ingestText" class="muted">Paper text</label>
+            <textarea id="ingestText" name="text" rows="8" placeholder="Paste abstract or full text…" required></textarea>
+          </div>
+
+          <div class="controls">
+            <button type="button" id="btnPreview" class="btn">Preview JSON</button>
+            <button type="button" id="btnSave" class="btn primary">Save to DB</button>
+            <span id="ingestStatus" class="pill">idle</span>
+          </div>
+
+          <details class="raw">
+            <summary class="muted">Preview payload</summary>
+            <pre id="ingestPreview"></pre>
+          </details>
         </form>
       </div>
     </section>
+
 
     <!-- Footer -->
     <footer class="footer">
