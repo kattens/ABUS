@@ -1,24 +1,5 @@
-"""
-FastAPI app exposing:
-- GET /api/models                 -> list of model names
-- GET /api/models/{name}          -> {category: {subcategory: score}}
-- GET /api/models/{name}/full     -> includes weights + notes
-- GET /api/score/{name}           -> computed per-category averages + overall
-- POST /api/models/upsert         -> upsert model with categories/subfeatures
-- POST /api/compute?a=..&b=..     -> demo math endpoint
-- GET /health                     -> health check
-- GET /                           -> redirect to docs
-
-Also mounts /web (static) so you can open the site from the API (same origin).
-"""
-
-# --- ensure project root (parent of /api) is importable, so 'services' works ---
+# api/app.py
 import os, sys
-ROOT = os.path.dirname(os.path.dirname(__file__))  # ABUS project root
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
-
-from typing import Dict
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -33,48 +14,40 @@ from services.scoring_service import (
     upsert_model_from_payload,
 )
 
-# -----------------------------------------------------------------------------
-# App setup
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# FastAPI setup
+# ---------------------------------------------------------------------
 app = FastAPI(title="ABUS API", version="0.1.0")
 
-# CORS for local dev (allow web on 127.0.0.1:5500 OR same-origin if using /web)
+# Allow local & container access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
-        "*",  # fine for local dev; tighten in prod
-    ],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Ensure tables exist (safe if already created)
+# Initialize DB tables (safe if already exists)
 init_db()
 
-# Optionally serve the frontend from the same origin to avoid CORS entirely
+# Serve static files from /web folder (frontend)
+ROOT = os.path.dirname(os.path.dirname(__file__))  # project root
 WEB_DIR = os.path.join(ROOT, "web")
 if os.path.isdir(WEB_DIR):
-    app.mount("/web", StaticFiles(directory=WEB_DIR, html=True), name="web")
+    app.mount("/", StaticFiles(directory=WEB_DIR, html=True), name="web")
 
-# -----------------------------------------------------------------------------
-# Utilities
-# -----------------------------------------------------------------------------
 @app.get("/")
 def root():
-    # Open API docs by default; you can switch to "/web/" if you prefer landing on the site.
-    return RedirectResponse(url="/docs")
+    # Redirect root to web index.html
+    return RedirectResponse("/index.html")
 
 @app.get("/health")
 def health():
     return {"ok": True}
 
-# -----------------------------------------------------------------------------
-# Read-only endpoints
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# API routes
+# ---------------------------------------------------------------------
 @app.get("/api/models")
 def list_models():
     with get_session() as s:
@@ -88,8 +61,7 @@ def get_model(name: str):
         if not m:
             raise HTTPException(404, f"Model '{name}' not found")
 
-        # Build nested shape: {category: {subcategory: score}}
-        out: Dict[str, Dict[str, float]] = {}
+        out = {}
         scores = s.exec(select(Score).where(Score.model_id == m.id)).all()
         for sc in scores:
             sub = s.get(Subcategory, sc.subcategory_id)
@@ -105,9 +77,6 @@ def get_model_full(name: str):
         except ValueError as e:
             raise HTTPException(404, str(e))
 
-# -----------------------------------------------------------------------------
-# Compute/scoring
-# -----------------------------------------------------------------------------
 @app.get("/api/score/{name}")
 def get_score(name: str):
     with get_session() as s:
@@ -118,14 +87,10 @@ def get_score(name: str):
 
 @app.post("/api/compute")
 def compute(a: float, b: float):
-    # Placeholder math; swap in your real formula when ready
     if a == 0 or b == 0:
         return {"result": 0.0}
-    return {"result": 2 * (a * b) / (a + b)}  # harmonic-mean style
+    return {"result": 2 * (a * b) / (a + b)}  # harmonic mean
 
-# -----------------------------------------------------------------------------
-# Upsert (create/update a full model via payload)
-# -----------------------------------------------------------------------------
 @app.post("/api/models/upsert")
 def models_upsert(payload: dict = Body(...)):
     with get_session() as s, s.begin():

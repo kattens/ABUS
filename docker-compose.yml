@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "80:8000"                         # open the site at http://localhost
+    env_file:
+      - .env                              # optional (see .env.example)
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./data/abus.db}
+    volumes:
+      - abus_data:/app/data               # persist SQLite DB file
+
+  # One-shot seeding (run manually when needed)
+  # usage: docker compose run --rm seed
+  seed:
+    build: .
+    command: ["python", "-m", "api.seed_from_json"]
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./data/abus.db}
+    volumes:
+      - abus_data:/app/data
+    depends_on:
+      - app
+
+volumes:
+  abus_data:

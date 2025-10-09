@@ -1,51 +1,30 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-echo "Starting ABUS environment setup..."
+echo "Starting ABUS with Docker..."
 
-# 1. Environment name
-ENV_NAME="abus_env"
-PY_VERSION="3.10"
-
-# 2. Create conda environment
-if conda env list | grep -q "$ENV_NAME"; then
-  echo "Conda env '$ENV_NAME' already exists. Skipping creation."
-else
-  echo "Creating conda env '$ENV_NAME'..."
-  conda create -n $ENV_NAME python=$PY_VERSION -y
+# Check Docker availability
+if ! command -v docker >/dev/null 2>&1; then
+  echo "[ERROR] Docker not found. Please install Docker Desktop or Docker Engine first."
+  exit 1
 fi
 
-# 3. Activate it
-echo "🔧 Activating environment..."
-eval "$(conda shell.bash hook)"
-conda activate $ENV_NAME
-
-# 4. Install requirements
-if [ -f "requirements.txt" ]; then
-  echo "Installing from requirements.txt..."
-  pip install -r requirements.txt
-else
-  echo "No requirements.txt found — installing defaults..."
-  pip install fastapi uvicorn[standard] sqlmodel sqlalchemy python-dotenv pydantic
+if ! command -v docker compose >/dev/null 2>&1; then
+  echo "[ERROR] Docker Compose plugin missing. Update Docker Desktop."
+  exit 1
 fi
 
-# 5. Create project folders if missing
-echo "Creating folders..."
-mkdir -p api/services api/data web abus/data
-
-# 6. Create .env file if not exists
-if [ ! -f ".env" ]; then
-  echo "DATABASE_URL=sqlite:///./abus.db" > .env
-  echo " .env file created"
-else
-  echo ".env file already exists"
+# Create .env if missing
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo "[INFO] Created .env from template."
 fi
 
-# 7. Show summary
-echo ""
-echo "ABUS environment setup complete!"
-echo "To start working:"
-echo "-----------------------------------"
-echo "conda activate $ENV_NAME"
-echo "uvicorn api.app:app --reload"
-echo "-----------------------------------"
+# Build and start
+docker compose up -d
+echo "[INFO] App is running in Docker containers."
+echo "---------------------------------------------"
+echo "Frontend: http://localhost"
+echo "API:      http://localhost/api/models"
+echo "Database: persisted in Docker volume"
+echo "---------------------------------------------"
