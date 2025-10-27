@@ -16,7 +16,7 @@ else
 fi
 
 # 3. Activate it
-echo "🔧 Activating environment..."
+echo "Activating environment..."
 eval "$(conda shell.bash hook)"
 conda activate $ENV_NAME
 
@@ -45,7 +45,6 @@ fi
 echo ""
 echo "ABUS environment setup complete!"
 echo "To start working:"
-echo "-----------------------------------"
 echo "conda activate $ENV_NAME"
 echo "uvicorn api.app:app --reload"
-echo "-----------------------------------"
+
