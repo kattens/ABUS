@@ -1,8 +1,7 @@
-// Auto-detect API base:
-// - If page is served from FastAPI on :8000 (/web), use same-origin ("").
-// - Otherwise (e.g., served from :5500), call the API on :8000 explicitly.
 const apiBase = (location.port === "8000" ? "" : "http://127.0.0.1:8000");
-console.log("[boot] apiBase =", apiBase);
+const siteBase = location.pathname.startsWith("/ABUS") ? "/ABUS" : "";
+
+console.log("[boot] apiBase =", apiBase, "siteBase =", siteBase);
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elements used by the Models browser
@@ -51,8 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
       card.appendChild(subWrap);
       wrap.appendChild(card);
     }
-    modelView.innerHTML = "";
-    modelView.appendChild(wrap);
+    if (modelView) {
+      modelView.innerHTML = "";
+      modelView.appendChild(wrap);
+    }
+  }
+
+  // Small helper to fill the <select>
+  function populateModels(list) {
+    modelSelect.innerHTML = "";
+    const ph = document.createElement("option");
+    ph.value = "";
+    ph.textContent = "— select a model —";
+    modelSelect.appendChild(ph);
+
+    for (const name of list) {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      modelSelect.appendChild(opt);
+    }
   }
 
   async function loadModels() {
@@ -62,35 +79,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setStatus("loading models…");
     try {
-      // IMPORTANT: ensure we call the API origin (not the static server)
+      // 1) Try the live API first
       const data = await fetchJSON(`${apiBase}/api/models`);
       if (!data || !Array.isArray(data.models)) throw new Error("bad /api/models payload");
-      modelSelect.innerHTML = "";
-      // Add a placeholder option
-      const ph = document.createElement("option");
-      ph.value = "";
-      ph.textContent = "— select a model —";
-      modelSelect.appendChild(ph);
-
-      for (const name of data.models) {
-        const opt = document.createElement("option");
-        opt.value = name;
-        opt.textContent = name;
-        modelSelect.appendChild(opt);
-      }
+      populateModels(data.models);
       setStatus(`loaded ${data.models.length} models`);
-
-      // Auto-load the first model's details (if any)
       if (data.models.length > 0) {
         modelSelect.value = data.models[0];
         await loadFull();
-      } else {
+      } else if (modelView) {
         modelView.innerHTML = "<div class='panel'>No models found.</div>";
       }
     } catch (e) {
-      console.error(e);
-      setStatus(`error loading models: ${e.message}`);
-      if (modelView) modelView.innerHTML = `<pre>${e.message}</pre>`;
+      console.warn("[models] API failed, falling back to static JSON:", e.message);
+      setStatus("loading static models…");
+      try {
+        // 2) Fallback to static file on GitHub Pages
+        const res = await fetch(`${siteBase}/data/models.json`);
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        const rows = await res.json(); // Expect { "models": ["Name1", "Name2", ...] } OR ["Name1","Name2"]
+        const models = Array.isArray(rows?.models) ? rows.models : (Array.isArray(rows) ? rows : []);
+        populateModels(models);
+        setStatus(`loaded ${models.length} models (static)`);
+        if (models.length > 0) {
+          modelSelect.value = models[0];
+          await loadFull(); // loadFull also has its own fallback
+        } else if (modelView) {
+          modelView.innerHTML = "<div class='panel'>No models found (static).</div>";
+        }
+      } catch (ee) {
+        console.error(ee);
+        setStatus(`error loading models: ${ee.message}`);
+        if (modelView) modelView.innerHTML = `<pre>${ee.message}</pre>`;
+      }
     }
   }
 
@@ -101,36 +122,70 @@ document.addEventListener('DOMContentLoaded', () => {
     setStatus(`loading ${name}…`);
     modelView.innerHTML = "";
     if (raw) raw.textContent = "";
+
+    // Helper to render score block
+    function renderScore(sc) {
+      const scoreBlock = document.createElement("div");
+      scoreBlock.className = "panel";
+      const lines = [];
+      lines.push(`<h3>Computed Score</h3>`);
+      const overall = typeof sc?.overall === "number" ? sc.overall.toFixed(3) : "0.000";
+      lines.push(`<div class="muted">overall: <strong>${overall}</strong></div>`);
+      lines.push(`<div style="margin-top:8px">`);
+      for (const [cat, obj] of Object.entries(sc?.categories || {})) {
+        const avg = typeof obj.avg === "number" ? obj.avg.toFixed(3) : "0.000";
+        lines.push(`<div class="sub"><strong>${cat}</strong> — avg: ${avg} (n=${obj.count}), weight: ${obj.weight}</div>`);
+      }
+      lines.push(`</div>`);
+      scoreBlock.innerHTML = lines.join("");
+      modelView.prepend(scoreBlock);
+    }
+
+    // 1) Try API for full & score
     try {
       const full = await fetchJSON(`${apiBase}/api/models/${encodeURIComponent(name)}/full`);
       renderFull(full);
 
-      // Also fetch computed score block if available
       try {
         const sc = await fetchJSON(`${apiBase}/api/score/${encodeURIComponent(name)}`);
-        const scoreBlock = document.createElement("div");
-        scoreBlock.className = "panel";
-        const lines = [];
-        lines.push(`<h3>Computed Score</h3>`);
-        const overall = typeof sc.overall === "number" ? sc.overall.toFixed(3) : "0.000";
-        lines.push(`<div class="muted">overall: <strong>${overall}</strong></div>`);
-        lines.push(`<div style="margin-top:8px">`);
-        for (const [cat, obj] of Object.entries(sc.categories || {})) {
-          const avg = typeof obj.avg === "number" ? obj.avg.toFixed(3) : "0.000";
-          lines.push(`<div class="sub"><strong>${cat}</strong> — avg: ${avg} (n=${obj.count}), weight: ${obj.weight}</div>`);
-        }
-        lines.push(`</div>`);
-        scoreBlock.innerHTML = lines.join("");
-        modelView.prepend(scoreBlock);
-      } catch (e) {
-        console.warn("Score fetch failed:", e.message);
+        renderScore(sc);
+      } catch (e2) {
+        console.warn("Score fetch failed (API), trying static:", e2.message);
+        try {
+          const scRes = await fetch(`${siteBase}/data/score/${encodeURIComponent(name)}.json`);
+          if (scRes.ok) {
+            const sc = await scRes.json();
+            renderScore(sc);
+          }
+        } catch (_) { /* ignore */ }
       }
 
       setStatus(`loaded ${name}`);
+      return; // done
+    } catch (e) {
+      console.warn(`[full] API failed for ${name}, trying static:`, e.message);
+    }
+
+    // 2) Fallback to static files for full & score
+    try {
+      const fullRes = await fetch(`${siteBase}/data/full/${encodeURIComponent(name)}.json`);
+      if (!fullRes.ok) throw new Error(`${fullRes.status} ${fullRes.statusText}`);
+      const full = await fullRes.json();
+      renderFull(full);
+
+      try {
+        const scRes = await fetch(`${siteBase}/data/score/${encodeURIComponent(name)}.json`);
+        if (scRes.ok) {
+          const sc = await scRes.json();
+          renderScore(sc);
+        }
+      } catch (_) { /* ignore score if missing */ }
+
+      setStatus(`loaded ${name} (static)`);
     } catch (e) {
       console.error(e);
       setStatus(`error loading ${name}: ${e.message}`);
-      modelView.innerHTML = `<pre>${e.message}</pre>`;
+      if (modelView) modelView.innerHTML = `<pre>${e.message}</pre>`;
     }
   }
 
