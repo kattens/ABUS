@@ -11,8 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const raw         = document.getElementById("raw");
   const statusEl    = document.getElementById("status");
 
-  // 🔹 Global cache for model_scores.json (for browser + recommender)
+  // Recommender elements
+  const filterGrid         = document.getElementById("filterGrid");
+  const btnRecommend       = document.getElementById("btnRecommend");
+  const recommendResultsEl = document.getElementById("recommendResults");
+
+  // Global cache for model_scores.json
   let modelData = null;
+  let filtersInitialized = false;
 
   function setStatus(s) {
     if (statusEl) statusEl.textContent = s;
@@ -28,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return res.json();
   }
 
-  // Rendering a single model (unchanged)
+  // Rendering a single model (browser view)
   function renderFull(full) {
     if (raw) raw.textContent = JSON.stringify(full, null, 2);
     const wrap = document.createElement("div");
@@ -61,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modelView.appendChild(wrap);
   }
 
-  // 🔢 ABUS score computation helper
+  // ABUS score computation helper (0–100)
   function computeAbusScore(model) {
     if (!model) return 0;
     let total = 0;
@@ -80,31 +86,105 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (maxTotal === 0) return 0;
-    // Return 0–100 for easier comparison
     return (total / maxTotal) * 100;
   }
 
-  // 🔍 Filter + rank models based on constraints
+  // Dynamic filter UI: build controls for ALL subfeatures
+  function initDynamicFilters() {
+    if (!filterGrid || !modelData || filtersInitialized) return;
+
+    const entries = Object.entries(modelData);
+    if (!entries.length) return;
+
+    const [sampleName, sampleModel] = entries[0];
+    console.log("[filters] building from sample model:", sampleName);
+
+    filterGrid.innerHTML = "";
+
+    for (const [catName, cat] of Object.entries(sampleModel || {})) {
+      const catBox = document.createElement("div");
+      catBox.className = "filter-category";
+      const h4 = document.createElement("h4");
+      h4.textContent = catName;
+      catBox.appendChild(h4);
+
+      const subsWrap = document.createElement("div");
+      subsWrap.className = "filter-subgrid";
+
+      for (const [subName] of Object.entries(cat.subfeatures || {})) {
+        const label = document.createElement("label");
+        label.className = "muted";
+        label.style.display = "block";
+
+        const title = document.createElement("span");
+        title.textContent = subName;
+        title.style.display = "block";
+        title.style.fontSize = "13px";
+        title.style.marginBottom = "4px";
+
+        const select = document.createElement("select");
+        select.setAttribute("data-cat", catName);
+        select.setAttribute("data-sub", subName);
+        select.innerHTML = `
+          <option value="">any</option>
+          <option value="0">≥ 0</option>
+          <option value="1">≥ 1</option>
+          <option value="2">≥ 2</option>
+        `;
+
+        label.appendChild(title);
+        label.appendChild(select);
+        subsWrap.appendChild(label);
+      }
+
+      catBox.appendChild(subsWrap);
+      filterGrid.appendChild(catBox);
+    }
+
+    filtersInitialized = true;
+  }
+
+  // Read constraints from dynamic filter UI
+  function getCurrentConstraints() {
+    const constraints = {};
+    if (!filterGrid) return constraints;
+
+    const selects = filterGrid.querySelectorAll("select[data-cat][data-sub]");
+    selects.forEach(sel => {
+      if (sel.value === "") return;
+      const cat = sel.getAttribute("data-cat");
+      const sub = sel.getAttribute("data-sub");
+      const key = `${cat}.${sub}`;
+      const val = Number(sel.value);
+      if (!Number.isNaN(val)) {
+        constraints[key] = val; // minimum score
+      }
+    });
+
+    return constraints;
+  }
+
+  // Filter + rank models based on constraints
   function filterAndRankModels(constraints = {}) {
     if (!modelData) return [];
 
     const out = [];
+    const constraintEntries = Object.entries(constraints);
 
     for (const [name, model] of Object.entries(modelData)) {
-      const bio = model.bioinformatics_relevance?.subfeatures || {};
-      const usability = model.usability?.subfeatures || {};
+      let ok = true;
 
-      const structScore = bio.structural_awareness?.score ?? 0;
-      const codeScore   = usability.code_availability?.score ?? 0;
+      for (const [key, minVal] of constraintEntries) {
+        const [catName, subName] = key.split(".");
+        const subObj = model?.[catName]?.subfeatures?.[subName];
+        const score = subObj?.score ?? 0;
+        if (score < minVal) {
+          ok = false;
+          break;
+        }
+      }
 
-      if (constraints.structural_awareness_min != null &&
-          structScore < constraints.structural_awareness_min) {
-        continue;
-      }
-      if (constraints.code_availability_min != null &&
-          codeScore < constraints.code_availability_min) {
-        continue;
-      }
+      if (!ok) continue;
 
       const abusScore = computeAbusScore(model);
       out.push({ name, model, abusScore });
@@ -114,7 +194,49 @@ document.addEventListener('DOMContentLoaded', () => {
     return out;
   }
 
-  // ✔ LOAD MODELS FROM STATIC JSON FILE
+  function renderRecommendations(list) {
+    if (!recommendResultsEl) return;
+
+    if (!list.length) {
+      recommendResultsEl.innerHTML = `<div class="muted">No models match these constraints.</div>`;
+      return;
+    }
+
+    const parts = [];
+    parts.push(`<div class="model-grid">`);
+    for (const { name, model, abusScore } of list.slice(0, 12)) {
+      const abusive = abusScore.toFixed(1);
+      parts.push(`
+        <div class="cat">
+          <h4>
+            <span>${name}</span>
+            <span class="pill wt">ABUS: ${abusive}</span>
+          </h4>
+        </div>
+      `);
+    }
+    parts.push(`</div>`);
+    recommendResultsEl.innerHTML = parts.join("");
+  }
+
+  async function runRecommender() {
+    if (!modelData) {
+      await loadModels(); // this will also init filters
+    }
+    const constraints = getCurrentConstraints();
+    console.log("[recommender] constraints:", constraints);
+    const ranked = filterAndRankModels(constraints);
+    renderRecommendations(ranked);
+  }
+
+  if (btnRecommend) {
+    btnRecommend.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      runRecommender();
+    });
+  }
+
+  // Load models from static JSON (browser + filters)
   async function loadModels() {
     if (!modelSelect) {
       console.warn("[models] #modelSelect not found; skipping load");
@@ -124,28 +246,25 @@ document.addEventListener('DOMContentLoaded', () => {
     setStatus("loading models…");
 
     try {
-      // Load static JSON file
       const data = await fetchJSON("data/model_scores.json");
 
       if (!data || typeof data !== "object") {
         throw new Error("model_scores.json must be an object mapping name → details");
       }
 
-      // Cache globally for recommender use
       modelData = data;
 
-      // Extract model names
+      // Init dynamic filters once we have the data
+      initDynamicFilters();
+
       const modelNames = Object.keys(data);
 
-      // Reset dropdown
       modelSelect.innerHTML = "";
-
       const ph = document.createElement("option");
       ph.value = "";
       ph.textContent = "— select a model —";
       modelSelect.appendChild(ph);
 
-      // Add models
       for (const name of modelNames) {
         const opt = document.createElement("option");
         opt.value = name;
@@ -155,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setStatus(`loaded ${modelNames.length} models`);
 
-      // Auto-load first model
       if (modelNames.length > 0) {
         modelSelect.value = modelNames[0];
         await loadFull();
@@ -170,23 +288,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ✔ LOAD FULL MODEL DETAILS FROM JSON
   async function loadFull() {
     if (!modelSelect || !modelView) return;
 
     const name = modelSelect.value;
-    if (!name) return; // ignore placeholder
+    if (!name) return;
 
     setStatus(`loading ${name}…`);
     modelView.innerHTML = "";
     if (raw) raw.textContent = "";
 
     try {
-      // Reuse cache if available; otherwise refetch
       let data = modelData;
       if (!data) {
         data = await fetchJSON("data/model_scores.json");
         modelData = data;
+        initDynamicFilters();
       }
 
       const full = data[name];
@@ -195,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       renderFull(full);
-
       console.warn("[info] Score API disabled (static JSON mode)");
       setStatus(`loaded ${name}`);
 
@@ -215,102 +331,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // Boot on page load
   loadModels();
 
-  // (HTML panel is optional – only runs if elements exist)
-  const filterStruct       = document.getElementById("filterStruct");
-  const filterCode         = document.getElementById("filterCode");
-  const btnRecommend       = document.getElementById("btnRecommend");
-  const recommendResultsEl = document.getElementById("recommendResults");
-
-  function getCurrentConstraints() {
-    const c = {};
-    const sVal = filterStruct?.value;
-    const cVal = filterCode?.value;
-
-    if (sVal !== "" && sVal != null) c.structural_awareness_min = Number(sVal);
-    if (cVal !== "" && cVal != null) c.code_availability_min    = Number(cVal);
-
-    return c;
-  }
-
-  function renderRecommendations(list) {
-    if (!recommendResultsEl) return;
-    if (!list.length) {
-      recommendResultsEl.innerHTML = `<div class="muted">No models match these constraints.</div>`;
-      return;
-    }
-
-    const lines = [];
-    lines.push(`<div class="model-grid">`);
-    for (const { name, model, abusScore } of list.slice(0, 8)) {
-      const bio = model.bioinformatics_relevance?.subfeatures || {};
-      const usability = model.usability?.subfeatures || {};
-      const structScore = bio.structural_awareness?.score ?? 0;
-      const codeScore   = usability.code_availability?.score ?? 0;
-
-      lines.push(`
-        <div class="cat">
-          <h4>
-            <span>${name}</span>
-            <span class="pill wt">ABUS: ${abusScore.toFixed(1)}</span>
-          </h4>
-          <div class="sub muted">
-            Structural awareness: ${structScore} / 2,
-            Code availability: ${codeScore} / 2
-          </div>
-        </div>
-      `);
-    }
-    lines.push(`</div>`);
-    recommendResultsEl.innerHTML = lines.join("");
-  }
-
-  async function runRecommender() {
-    if (!modelData) {
-      await loadModels();
-    }
-    const constraints = getCurrentConstraints();
-    const ranked = filterAndRankModels(constraints);
-    renderRecommendations(ranked);
-  }
-
-  if (btnRecommend) {
-    btnRecommend.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      runRecommender();
-    });
-  }
-
-  // INGEST & SCORING UI (UI only – no backend)
+  // Ingest & scoring (UI only – no backend)
   (function () {
     const ingestForm = document.getElementById("ingestForm");
     if (!ingestForm) return;
 
-    const nameEl    = document.getElementById("ingestName");
-    const textEl    = document.getElementById("ingestText");
     const statusEl2 = document.getElementById("ingestStatus");
     const previewEl = document.getElementById("ingestPreview");
     const btnPrev   = document.getElementById("btnPreview");
     const btnSave   = document.getElementById("btnSave");
-    const weightInputs = Array.from(ingestForm.querySelectorAll("input.wgt"));
 
     function setIngestStatus(s) {
       if (statusEl2) statusEl2.textContent = s;
       console.log("[ingest]", s);
     }
 
-    function collectWeights() {
-      const w = {};
-      for (const input of weightInputs) {
-        const cat = input.getAttribute("data-cat");
-        if (cat && input.value !== "") {
-          const val = Number(input.value);
-          if (!Number.isNaN(val)) w[cat] = val;
-        }
-      }
-      return Object.keys(w).length ? w : undefined;
-    }
-
-    // Right now this is just a placeholder since there's no API.
     async function doPreview() {
       setIngestStatus("Preview disabled (no backend)");
       previewEl.textContent = "Preview is disabled because this is static GitHub Pages mode.";
