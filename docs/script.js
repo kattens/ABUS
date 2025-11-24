@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const raw         = document.getElementById("raw");
   const statusEl    = document.getElementById("status");
 
-  function setStatus(s) { 
-    if (statusEl) statusEl.textContent = s; 
-    console.log("[status]", s); 
+  // 🔹 Global cache for model_scores.json (for browser + recommender)
+  let modelData = null;
+
+  function setStatus(s) {
+    if (statusEl) statusEl.textContent = s;
+    console.log("[status]", s);
   }
 
   async function fetchJSON(url, opts) {
@@ -25,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return res.json();
   }
 
-  // Your existing renderer stays unchanged
+  // Rendering a single model (unchanged)
   function renderFull(full) {
     if (raw) raw.textContent = JSON.stringify(full, null, 2);
     const wrap = document.createElement("div");
@@ -58,7 +61,60 @@ document.addEventListener('DOMContentLoaded', () => {
     modelView.appendChild(wrap);
   }
 
-  // ✔ UPDATED: LOAD MODELS FROM STATIC JSON FILE
+  // 🔢 ABUS score computation helper
+  function computeAbusScore(model) {
+    if (!model) return 0;
+    let total = 0;
+    let maxTotal = 0;
+
+    for (const [catName, cat] of Object.entries(model)) {
+      const weight = cat?.weight ?? 0;
+      const subs = cat?.subfeatures || {};
+      const scores = Object.values(subs).map(s => s?.score ?? 0);
+      if (!scores.length) continue;
+
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length; // avg in [0,2]
+      const normalized = avg / 2;                                   // [0,1]
+      total += weight * normalized;
+      maxTotal += weight;
+    }
+
+    if (maxTotal === 0) return 0;
+    // Return 0–100 for easier comparison
+    return (total / maxTotal) * 100;
+  }
+
+  // 🔍 Filter + rank models based on constraints
+  function filterAndRankModels(constraints = {}) {
+    if (!modelData) return [];
+
+    const out = [];
+
+    for (const [name, model] of Object.entries(modelData)) {
+      const bio = model.bioinformatics_relevance?.subfeatures || {};
+      const usability = model.usability?.subfeatures || {};
+
+      const structScore = bio.structural_awareness?.score ?? 0;
+      const codeScore   = usability.code_availability?.score ?? 0;
+
+      if (constraints.structural_awareness_min != null &&
+          structScore < constraints.structural_awareness_min) {
+        continue;
+      }
+      if (constraints.code_availability_min != null &&
+          codeScore < constraints.code_availability_min) {
+        continue;
+      }
+
+      const abusScore = computeAbusScore(model);
+      out.push({ name, model, abusScore });
+    }
+
+    out.sort((a, b) => b.abusScore - a.abusScore);
+    return out;
+  }
+
+  // ✔ LOAD MODELS FROM STATIC JSON FILE
   async function loadModels() {
     if (!modelSelect) {
       console.warn("[models] #modelSelect not found; skipping load");
@@ -68,12 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setStatus("loading models…");
 
     try {
-      // Load static JSON file (Version A)
+      // Load static JSON file
       const data = await fetchJSON("data/model_scores.json");
 
       if (!data || typeof data !== "object") {
         throw new Error("model_scores.json must be an object mapping name → details");
       }
+
+      // Cache globally for recommender use
+      modelData = data;
 
       // Extract model names
       const modelNames = Object.keys(data);
@@ -111,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ✔ UPDATED: LOAD FULL MODEL DETAILS FROM JSON
+  // ✔ LOAD FULL MODEL DETAILS FROM JSON
   async function loadFull() {
     if (!modelSelect || !modelView) return;
 
@@ -123,20 +182,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (raw) raw.textContent = "";
 
     try {
-      const data = await fetchJSON("data/model_scores.json");
+      // Reuse cache if available; otherwise refetch
+      let data = modelData;
+      if (!data) {
+        data = await fetchJSON("data/model_scores.json");
+        modelData = data;
+      }
 
       const full = data[name];
       if (!full) {
         throw new Error(`Model "${name}" not found in model_scores.json`);
       }
 
-      // Render model categories + subfeatures
       renderFull(full);
 
-      // (Optional) No computed scores since we removed the backend.
-      // We leave placeholder just in case.
       console.warn("[info] Score API disabled (static JSON mode)");
-
       setStatus(`loaded ${name}`);
 
     } catch (e) {
@@ -155,7 +215,72 @@ document.addEventListener('DOMContentLoaded', () => {
   // Boot on page load
   loadModels();
 
-  // INGEST & SCORING UI (unchanged, but API-disabled)
+  // (HTML panel is optional – only runs if elements exist)
+  const filterStruct       = document.getElementById("filterStruct");
+  const filterCode         = document.getElementById("filterCode");
+  const btnRecommend       = document.getElementById("btnRecommend");
+  const recommendResultsEl = document.getElementById("recommendResults");
+
+  function getCurrentConstraints() {
+    const c = {};
+    const sVal = filterStruct?.value;
+    const cVal = filterCode?.value;
+
+    if (sVal !== "" && sVal != null) c.structural_awareness_min = Number(sVal);
+    if (cVal !== "" && cVal != null) c.code_availability_min    = Number(cVal);
+
+    return c;
+  }
+
+  function renderRecommendations(list) {
+    if (!recommendResultsEl) return;
+    if (!list.length) {
+      recommendResultsEl.innerHTML = `<div class="muted">No models match these constraints.</div>`;
+      return;
+    }
+
+    const lines = [];
+    lines.push(`<div class="model-grid">`);
+    for (const { name, model, abusScore } of list.slice(0, 8)) {
+      const bio = model.bioinformatics_relevance?.subfeatures || {};
+      const usability = model.usability?.subfeatures || {};
+      const structScore = bio.structural_awareness?.score ?? 0;
+      const codeScore   = usability.code_availability?.score ?? 0;
+
+      lines.push(`
+        <div class="cat">
+          <h4>
+            <span>${name}</span>
+            <span class="pill wt">ABUS: ${abusScore.toFixed(1)}</span>
+          </h4>
+          <div class="sub muted">
+            Structural awareness: ${structScore} / 2,
+            Code availability: ${codeScore} / 2
+          </div>
+        </div>
+      `);
+    }
+    lines.push(`</div>`);
+    recommendResultsEl.innerHTML = lines.join("");
+  }
+
+  async function runRecommender() {
+    if (!modelData) {
+      await loadModels();
+    }
+    const constraints = getCurrentConstraints();
+    const ranked = filterAndRankModels(constraints);
+    renderRecommendations(ranked);
+  }
+
+  if (btnRecommend) {
+    btnRecommend.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      runRecommender();
+    });
+  }
+
+  // INGEST & SCORING UI (UI only – no backend)
   (function () {
     const ingestForm = document.getElementById("ingestForm");
     if (!ingestForm) return;
@@ -168,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSave   = document.getElementById("btnSave");
     const weightInputs = Array.from(ingestForm.querySelectorAll("input.wgt"));
 
-    function setIngestStatus(s) { 
-      if (statusEl2) statusEl2.textContent = s; 
-      console.log("[ingest]", s); 
+    function setIngestStatus(s) {
+      if (statusEl2) statusEl2.textContent = s;
+      console.log("[ingest]", s);
     }
 
     function collectWeights() {
@@ -185,8 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return Object.keys(w).length ? w : undefined;
     }
 
-    // These functions no longer POST to a backend API.
-    // We keep the UI functional but disable backend scoring.
+    // Right now this is just a placeholder since there's no API.
     async function doPreview() {
       setIngestStatus("Preview disabled (no backend)");
       previewEl.textContent = "Preview is disabled because this is static GitHub Pages mode.";

@@ -92,6 +92,12 @@
       </div>
     </section>
 
+
+
+
+
+
+
     <!-- Browser -->
     <section id="browser" class="section fade-in">
       <div class="wrap">
@@ -115,6 +121,44 @@
         </div>
       </div>
     </section>
+
+
+    <section id="recommender" class="section fade-in">
+      <div class="wrap">
+        <h2>ABUS Recommender</h2>
+        <p class="muted">
+          Filter and rank models based on structural awareness and code availability.
+          Results are scored using the ABUS framework.
+        </p>
+
+        <div class="panel">
+          <div class="controls" style="flex-wrap:wrap; gap:8px">
+            <label class="muted">
+              Structural awareness ≥
+              <select id="filterStruct">
+                <option value="">any</option>
+                <option value="1">1 (some structure)</option>
+                <option value="2">2 (strong structural integration)</option>
+              </select>
+            </label>
+
+            <label class="muted">
+              Code availability ≥
+              <select id="filterCode">
+                <option value="">any</option>
+                <option value="1">1 (partial / planned)</option>
+                <option value="2">2 (open-source & documented)</option>
+              </select>
+            </label>
+
+            <button class="btn" id="btnRecommend">Recommend models</button>
+          </div>
+
+          <div id="recommendResults" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </section>
+
 
     <!-- Ingest & Score -->
     <section id="compute" class="section fade-in">
