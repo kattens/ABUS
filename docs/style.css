@@ -173,3 +173,23 @@ pre{
 /* Small helpers */
 .hidden{display:none !important}
 .center{text-align:center}
+
+/* Recommender section */
+#recommender .controls{
+  align-items:flex-end;
+}
+#recommender .controls label{
+  display:flex;
+  flex-direction:column;
+  font-size:13px;
+}
+#recommender .controls label select{
+  margin-top:4px;
+  min-width:140px;
+}
+#btnRecommend{
+  margin-left:auto;
+}
+#recommendResults{
+  margin-top:14px;
+}

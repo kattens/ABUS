@@ -3,7 +3,7 @@
 const apiBase = (location.port === "8000" ? "" : "http://127.0.0.1:8000");
 console.log("[boot] apiBase =", apiBase);
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Elements used by the Models browser
   const modelSelect = document.getElementById("modelSelect");
   const loadBtn     = document.getElementById("loadBtn");
@@ -11,14 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const raw         = document.getElementById("raw");
   const statusEl    = document.getElementById("status");
 
-  // Recommender elements
-  const filterGrid         = document.getElementById("filterGrid");
+  // Recommender elements (5 ABUS categories)
+  const filterAdapt = document.getElementById("filterAdapt");
+  const filterBio   = document.getElementById("filterBio");
+  const filterUse   = document.getElementById("filterUse");
+  const filterComp  = document.getElementById("filterComp");
+  const filterOut   = document.getElementById("filterOut");
   const btnRecommend       = document.getElementById("btnRecommend");
   const recommendResultsEl = document.getElementById("recommendResults");
 
-  // Global cache for model_scores.json
+  // Cached JSON from data/model_scores.json
   let modelData = null;
-  let filtersInitialized = false;
 
   function setStatus(s) {
     if (statusEl) statusEl.textContent = s;
@@ -34,14 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return res.json();
   }
 
-  // Rendering a single model (browser view)
+  // ---------------------------
+  // Rendering single model view
+  // ---------------------------
   function renderFull(full) {
     if (raw) raw.textContent = JSON.stringify(full, null, 2);
+
     const wrap = document.createElement("div");
     wrap.className = "model-grid";
+
     for (const [cat, val] of Object.entries(full || {})) {
       const card = document.createElement("div");
       card.className = "cat";
+
       const h4 = document.createElement("h4");
       const title = document.createElement("span");
       title.textContent = cat;
@@ -61,26 +69,32 @@ document.addEventListener('DOMContentLoaded', () => {
         subWrap.appendChild(row);
       }
       card.appendChild(subWrap);
+
       wrap.appendChild(card);
     }
+
     modelView.innerHTML = "";
     modelView.appendChild(wrap);
   }
 
-  // ABUS score computation helper (0–100)
+  // ---------------------------
+  // ABUS helpers
+  // ---------------------------
+
+  // Overall ABUS score 0–100 using category weights + average subfeature score
   function computeAbusScore(model) {
     if (!model) return 0;
     let total = 0;
     let maxTotal = 0;
 
-    for (const [catName, cat] of Object.entries(model)) {
+    for (const [, cat] of Object.entries(model)) {
       const weight = cat?.weight ?? 0;
       const subs = cat?.subfeatures || {};
-      const scores = Object.values(subs).map(s => s?.score ?? 0);
+      const scores = Object.values(subs).map((s) => s?.score ?? 0);
       if (!scores.length) continue;
 
       const avg = scores.reduce((a, b) => a + b, 0) / scores.length; // avg in [0,2]
-      const normalized = avg / 2;                                   // [0,1]
+      const normalized = avg / 2; // [0,1]
       total += weight * normalized;
       maxTotal += weight;
     }
@@ -89,154 +103,26 @@ document.addEventListener('DOMContentLoaded', () => {
     return (total / maxTotal) * 100;
   }
 
-  // Dynamic filter UI: build controls for ALL subfeatures
-  function initDynamicFilters() {
-    if (!filterGrid || !modelData || filtersInitialized) return;
+  // Per-category average scores (0–2)
+  function computeCategoryAverages(model) {
+    const out = {};
+    if (!model) return out;
 
-    const entries = Object.entries(modelData);
-    if (!entries.length) return;
-
-    const [sampleName, sampleModel] = entries[0];
-    console.log("[filters] building from sample model:", sampleName);
-
-    filterGrid.innerHTML = "";
-
-    for (const [catName, cat] of Object.entries(sampleModel || {})) {
-      const catBox = document.createElement("div");
-      catBox.className = "filter-category";
-      const h4 = document.createElement("h4");
-      h4.textContent = catName;
-      catBox.appendChild(h4);
-
-      const subsWrap = document.createElement("div");
-      subsWrap.className = "filter-subgrid";
-
-      for (const [subName] of Object.entries(cat.subfeatures || {})) {
-        const label = document.createElement("label");
-        label.className = "muted";
-        label.style.display = "block";
-
-        const title = document.createElement("span");
-        title.textContent = subName;
-        title.style.display = "block";
-        title.style.fontSize = "13px";
-        title.style.marginBottom = "4px";
-
-        const select = document.createElement("select");
-        select.setAttribute("data-cat", catName);
-        select.setAttribute("data-sub", subName);
-        select.innerHTML = `
-          <option value="">any</option>
-          <option value="0">≥ 0</option>
-          <option value="1">≥ 1</option>
-          <option value="2">≥ 2</option>
-        `;
-
-        label.appendChild(title);
-        label.appendChild(select);
-        subsWrap.appendChild(label);
+    for (const [catName, cat] of Object.entries(model)) {
+      const subs = cat?.subfeatures || {};
+      const scores = Object.values(subs).map((s) => s?.score ?? 0);
+      if (!scores.length) {
+        out[catName] = 0;
+      } else {
+        out[catName] = scores.reduce((a, b) => a + b, 0) / scores.length;
       }
-
-      catBox.appendChild(subsWrap);
-      filterGrid.appendChild(catBox);
     }
-
-    filtersInitialized = true;
-  }
-
-  // Read constraints from dynamic filter UI
-  function getCurrentConstraints() {
-    const constraints = {};
-    if (!filterGrid) return constraints;
-
-    const selects = filterGrid.querySelectorAll("select[data-cat][data-sub]");
-    selects.forEach(sel => {
-      if (sel.value === "") return;
-      const cat = sel.getAttribute("data-cat");
-      const sub = sel.getAttribute("data-sub");
-      const key = `${cat}.${sub}`;
-      const val = Number(sel.value);
-      if (!Number.isNaN(val)) {
-        constraints[key] = val; // minimum score
-      }
-    });
-
-    return constraints;
-  }
-
-  // Filter + rank models based on constraints
-  function filterAndRankModels(constraints = {}) {
-    if (!modelData) return [];
-
-    const out = [];
-    const constraintEntries = Object.entries(constraints);
-
-    for (const [name, model] of Object.entries(modelData)) {
-      let ok = true;
-
-      for (const [key, minVal] of constraintEntries) {
-        const [catName, subName] = key.split(".");
-        const subObj = model?.[catName]?.subfeatures?.[subName];
-        const score = subObj?.score ?? 0;
-        if (score < minVal) {
-          ok = false;
-          break;
-        }
-      }
-
-      if (!ok) continue;
-
-      const abusScore = computeAbusScore(model);
-      out.push({ name, model, abusScore });
-    }
-
-    out.sort((a, b) => b.abusScore - a.abusScore);
     return out;
   }
 
-  function renderRecommendations(list) {
-    if (!recommendResultsEl) return;
-
-    if (!list.length) {
-      recommendResultsEl.innerHTML = `<div class="muted">No models match these constraints.</div>`;
-      return;
-    }
-
-    const parts = [];
-    parts.push(`<div class="model-grid">`);
-    for (const { name, model, abusScore } of list.slice(0, 12)) {
-      const abusive = abusScore.toFixed(1);
-      parts.push(`
-        <div class="cat">
-          <h4>
-            <span>${name}</span>
-            <span class="pill wt">ABUS: ${abusive}</span>
-          </h4>
-        </div>
-      `);
-    }
-    parts.push(`</div>`);
-    recommendResultsEl.innerHTML = parts.join("");
-  }
-
-  async function runRecommender() {
-    if (!modelData) {
-      await loadModels(); // this will also init filters
-    }
-    const constraints = getCurrentConstraints();
-    console.log("[recommender] constraints:", constraints);
-    const ranked = filterAndRankModels(constraints);
-    renderRecommendations(ranked);
-  }
-
-  if (btnRecommend) {
-    btnRecommend.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      runRecommender();
-    });
-  }
-
-  // Load models from static JSON (browser + filters)
+  // ---------------------------
+  // Load models from static JSON
+  // ---------------------------
   async function loadModels() {
     if (!modelSelect) {
       console.warn("[models] #modelSelect not found; skipping load");
@@ -254,12 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       modelData = data;
 
-      // Init dynamic filters once we have the data
-      initDynamicFilters();
-
       const modelNames = Object.keys(data);
-
       modelSelect.innerHTML = "";
+
       const ph = document.createElement("option");
       ph.value = "";
       ph.textContent = "— select a model —";
@@ -280,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         modelView.innerHTML = "<div class='panel'>No models found.</div>";
       }
-
     } catch (e) {
       console.error(e);
       setStatus(`error loading models: ${e.message}`);
@@ -292,21 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!modelSelect || !modelView) return;
 
     const name = modelSelect.value;
-    if (!name) return;
+    if (!name) return; // ignore placeholder
 
     setStatus(`loading ${name}…`);
     modelView.innerHTML = "";
     if (raw) raw.textContent = "";
 
     try {
-      let data = modelData;
-      if (!data) {
-        data = await fetchJSON("data/model_scores.json");
+      if (!modelData) {
+        const data = await fetchJSON("data/model_scores.json");
         modelData = data;
-        initDynamicFilters();
       }
 
-      const full = data[name];
+      const full = modelData[name];
       if (!full) {
         throw new Error(`Model "${name}" not found in model_scores.json`);
       }
@@ -314,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderFull(full);
       console.warn("[info] Score API disabled (static JSON mode)");
       setStatus(`loaded ${name}`);
-
     } catch (e) {
       console.error(e);
       setStatus(`error loading ${name}: ${e.message}`);
@@ -331,7 +210,84 @@ document.addEventListener('DOMContentLoaded', () => {
   // Boot on page load
   loadModels();
 
+  // ---------------------------
+  // Recommender: 5 category filters
+  // ---------------------------
+  function getMin(val) {
+    if (!val && val !== 0) return null;
+    const n = Number(val);
+    return Number.isNaN(n) ? null : n;
+  }
+
+  function runRecommender() {
+    if (!modelData || !recommendResultsEl) return;
+
+    const minAdapt = getMin(filterAdapt?.value);
+    const minBio   = getMin(filterBio?.value);
+    const minUse   = getMin(filterUse?.value);
+    const minComp  = getMin(filterComp?.value);
+    const minOut   = getMin(filterOut?.value);
+
+    const out = [];
+
+    for (const [name, model] of Object.entries(modelData)) {
+      const catAvg = computeCategoryAverages(model);
+
+      // Category keys in your JSON:
+      // "adaptability", "bioinformatics_relevance",
+      // "usability", "computational_efficiency", "output_suitability"
+      if (minAdapt !== null && (catAvg.adaptability ?? 0) < minAdapt) continue;
+      if (minBio   !== null && (catAvg.bioinformatics_relevance ?? 0) < minBio) continue;
+      if (minUse   !== null && (catAvg.usability ?? 0) < minUse) continue;
+      if (minComp  !== null && (catAvg.computational_efficiency ?? 0) < minComp) continue;
+      if (minOut   !== null && (catAvg.output_suitability ?? 0) < minOut) continue;
+
+      const abusScore = computeAbusScore(model);
+      out.push({ name, abusScore, catAvg });
+    }
+
+    out.sort((a, b) => b.abusScore - a.abusScore);
+
+    if (!out.length) {
+      recommendResultsEl.innerHTML = `<div class="muted">No models match these category thresholds.</div>`;
+      return;
+    }
+
+    const parts = [];
+    parts.push(`<div class="model-grid">`);
+    for (const item of out.slice(0, 12)) {
+      const sc = item.abusScore.toFixed(1);
+      parts.push(`
+        <div class="cat">
+          <h4>
+            <span>${item.name}</span>
+            <span class="pill wt">ABUS: ${sc}</span>
+          </h4>
+          <div class="note">
+            <strong>Category avgs</strong> 
+            · adapt=${(item.catAvg.adaptability ?? 0).toFixed(2)}
+            · bio=${(item.catAvg.bioinformatics_relevance ?? 0).toFixed(2)}
+            · use=${(item.catAvg.usability ?? 0).toFixed(2)}
+            · comp=${(item.catAvg.computational_efficiency ?? 0).toFixed(2)}
+            · out=${(item.catAvg.output_suitability ?? 0).toFixed(2)}
+          </div>
+        </div>
+      `);
+    }
+    parts.push(`</div>`);
+    recommendResultsEl.innerHTML = parts.join("");
+  }
+
+  if (btnRecommend) {
+    btnRecommend.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      runRecommender();
+    });
+  }
+
+  // ---------------------------
   // Ingest & scoring (UI only – no backend)
+  // ---------------------------
   (function () {
     const ingestForm = document.getElementById("ingestForm");
     if (!ingestForm) return;

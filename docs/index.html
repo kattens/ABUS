@@ -127,20 +127,67 @@
       <div class="wrap">
         <h2>ABUS Recommender</h2>
         <p class="muted">
-          Filter and rank models based on ABUS subfeature scores. 
-          Choose minimum 0/1/2 scores per subfeature and see the top-ranked models.
+          Filter and rank models based on ABUS category scores. 
+          Set minimum 0/1/2 averages for each category; models are then ranked by overall ABUS score.
         </p>
 
         <div class="panel">
-          <!-- Dynamic filters will be injected here from script.js -->
-          <div id="filterGrid" class="filter-grid" style="margin-bottom:12px"></div>
+          <div class="controls" style="flex-wrap:wrap; gap:8px">
 
-          <div class="controls" style="margin-top:8px; gap:8px">
+            <label class="muted">
+              Adaptability ≥
+              <select id="filterAdapt">
+                <option value="">any</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+
+            <label class="muted">
+              Bioinformatics relevance ≥
+              <select id="filterBio">
+                <option value="">any</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+
+            <label class="muted">
+              Usability ≥
+              <select id="filterUse">
+                <option value="">any</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+
+            <label class="muted">
+              Computational efficiency ≥
+              <select id="filterComp">
+                <option value="">any</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+
+            <label class="muted">
+              Output suitability ≥
+              <select id="filterOut">
+                <option value="">any</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </label>
+
             <button class="btn" id="btnRecommend">Recommend models</button>
-            <span class="pill muted">Filters use per-subfeature minimum scores (0–2)</span>
           </div>
 
-          <div id="recommendResults" style="margin-top:16px"></div>
+          <div id="recommendResults" style="margin-top:12px"></div>
         </div>
       </div>
     </section>
