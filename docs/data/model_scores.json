@@ -70,159 +70,190 @@
       }
     }
   },
-  "ProCyon": {
+
+  "PROCYON": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 1,
-          "note": "While ProCyon is described as multimodal, modularity (separating sequence and phenotype modules) is implied but not explicitly highlighted."
+          "score": 2,
+          "note": "Architecture integrates an LLM (Llama-3), a protein sequence encoder (ESM), a structure encoder (GearNet), retrieval projectors, and multimodal fusion modules; explicitly modular and co-trained. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
           "score": 2,
-          "note": "Targets a wide range of domains: molecular function, disease association, phenotype-based properties."
+          "note": "Demonstrated zero-shot task transfer to new phenotype descriptions, unseen phenotypes, predicting domain-level drug binding, peptide binding (after small finetune), and genetic variant effects. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Explicitly integrates protein sequence, phenotype data, and functional annotations as multimodal inputs."
+          "note": "Supports interleaved modalities: sequence, structure, protein domains, peptides, small molecule structures, and text in a unified prompt. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 0,
-          "note": "No indication that structural (3D) information is used — focuses on sequence and phenotype."
+          "score": 2,
+          "note": "Uses GearNet structural encoder; retrieves structural domain-level functions; performs structural reasoning such as drug-binding domain identification and mutation phenotype modeling. :contentReference[oaicite:4]{index=4}"
+        },
+        "biological_scope_multiscale": {
+          "score": 2,
+          "note": "Covers 5 knowledge domains: molecular functions, diseases, therapeutics, domains, and molecular interactions; models multiscale phenotypes from molecular to organism-level. :contentReference[oaicite:5]{index=5}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 0,
-          "note": "No open-source code link provided; no public repository found as of review time."
+          "score": 1,
+          "note": "Paper states that training datasets, training code, inference code, and pretrained models are publicly available, but no GitHub link is included in the PDF text. Score = 1 until explicit link is provided. :contentReference[oaicite:6]{index=6}"
         },
         "documentation_quality": {
           "score": 0,
-          "note": "No documentation or setup instructions are linked."
+          "note": "Paper does not describe documentation, tutorials, model cards, examples, or instructions; therefore cannot be confirmed. :contentReference[oaicite:7]{index=7}"
         },
         "setup_ease": {
-          "score": 0,
-          "note": "Setup cannot be assessed without available code."
+          "score": 1,
+          "note": "Architecture is extremely large (11B parameters) and requires multimodal encoders; paper does not describe installation or environment setup. Partial score only for stating that pretrained models are made available. :contentReference[oaicite:8]{index=8}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 0,
-          "note": "ProCyon has 11 billion parameters, optimized for performance but not for size efficiency."
+          "note": "Model is 11B parameters and integrates multiple encoders; no claims of parameter-efficient design or compression. :contentReference[oaicite:9]{index=9}"
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "Large model size implies scaling challenges, but multimodal aggregation suggests some efficiency strategies."
+          "note": "Paper provides performance benchmarks but does not present runtime scaling experiments or computational profiling; partial evidence from retrieval latency and inference modules. :contentReference[oaicite:10]{index=10}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 1,
-          "note": "Predicts phenotypic properties, but model interpretability (explanations, visualizations) not emphasized."
+          "score": 2,
+          "note": "Provides interpretable outputs: free-text phenotype generation, comparison with known biological functions, variant impact explanations, and domain-level retrieval visualizations. Includes t-SNE embedding structure shifts and self-QA filtering. :contentReference[oaicite:11]{index=11}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Very well aligned with biological tasks: phenotype prediction, disease function prediction."
+          "note": "Directly aligned with tasks such as contextual protein retrieval, phenotype QA, domain binding, peptide binding, disease-specific drug-target reasoning, and variant phenotype mapping. :contentReference[oaicite:12]{index=12}"
+        },
+        "multiscale_output_relevance": {
+          "score": 2,
+          "note": "Outputs are relevant across molecular, cellular, therapeutic, and disease levels; supports pleiotropic and compositional phenotype modeling. :contentReference[oaicite:13]{index=13}"
         }
       }
     }
   },
-  "Evola": {
+
+  "EvoLa": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 1,
-          "note": "Integrates evolutionary information with LLMs, but modularity (e.g., plug-in modules) is not explicitly discussed."
+          "score": 2,
+          "note": "EvoLa combines multiple modules: MSATrans, EvoTrans, EvoShare, an FDA module, and optional protein-specific branches. Components can be ablated independently (e.g., EvoShare, FDA), indicating modular design."
         },
         "transferability": {
           "score": 2,
-          "note": "Designed to answer a wide range of functional protein queries (functional annotations, structural stability, evolutionary relationships)."
+          "note": "The model generalizes effectively across multiple evolutionary tasks including homologous protein clustering, variant effect prediction, protein family classification, and MSA-to-representation tasks. Zero-shot and cross-family generalization are explicitly evaluated."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Uses protein sequence, evolutionary data, and textual descriptions as input modalities."
+          "note": "EvoLa uses multiple evolutionary modalities including MSAs, HMM profiles, substitution patterns, coevolution signals, and phylogenetic diversity (FDA), all extracted from biological multiple-sequence data."
         },
         "structural_awareness": {
           "score": 1,
-          "note": "Mentions predictions about structural stability, but does not deeply integrate structural coordinates or 3D data."
+          "note": "Structural prediction is not the primary goal; however, the model captures co-evolutionary patterns that implicitly reflect structural constraints. No explicit 3D structure encoder is used."
+        },
+        "biological_scope_multiscale": {
+          "score": 2,
+          "note": "Covers multi-scale evolutionary information: residue-level (mutational effects), sequence-level (family classification), and phylogenetic-level (FDA diversity module)."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 0,
-          "note": "No code repository available publicly; no GitHub or similar linked."
+          "score": 1,
+          "note": "Paper mentions that the implementation will be released upon publication but does not include a working GitHub link inside the PDF."
         },
         "documentation_quality": {
           "score": 0,
-          "note": "No documentation or setup instructions available."
+          "note": "No documentation, tutorials, examples, API description, or instructions are discussed in the paper."
         },
         "setup_ease": {
-          "score": 0,
-          "note": "Cannot assess setup without access to code or pre-trained models."
+          "score": 1,
+          "note": "The architecture is relatively complex (multiple evolutionary modules), but training was done using standard pipelines. Since no installation instructions are given, setup cannot be fully assessed."
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 0,
-          "note": "80 billion parameters — extremely large model with no explicit efficiency optimizations discussed."
+          "score": 1,
+          "note": "EvoLa is smaller and more efficient than large PLMs (e.g., 650M–3B), but the paper does not provide exact model size or emphasize efficiency as a design goal. Partial credit for being more lightweight than typical LLM-size PLMs."
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "No clear benchmarking data; large size implies resource-intensive inference, although designed for LLM-like scalability."
+          "note": "No explicit runtime benchmarks or scaling curves are shown. Training efficiency is mentioned qualitatively but without rigorous empirical evaluation."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Generates functional responses, but interpretability methods (e.g., attention visualization) are not highlighted."
+          "note": "Some interpretability shown through attention analyses, FDA diversity contributions, and co-evolution signal visualization; however, full interpretability tools are not provided."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Strong task alignment: functional annotation, evolutionary relationship prediction, structural stability prediction."
+          "note": "Outputs directly match biological tasks including variant effect prediction, protein family classification, evolutionary representation learning, and homolog clustering."
+        },
+        "multiscale_output_relevance": {
+          "score": 2,
+          "note": "Outputs provide residue-level scores, sequence-level embeddings, and family-level evolutionary summaries, aligning with multi-scale biological interpretation."
         }
       }
     }
   },
+
   "PoET-2": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "PoET-2 integrates nature-inspired modular embeddings, combining sequence, structure, and evolutionary features flexibly."
+          "note": "The model is explicitly built around a modular encoder + dual-decoder architecture (CLM and MLM) with structure adapters and retrieval components."
         },
         "transferability": {
           "score": 2,
-          "note": "Achieves high performance across protein function prediction, structural property prediction, and mutational effect prediction tasks."
+          "note": "PoET-2 supports zero-shot mutation prediction, indels, supervised few-shot learning, and structure-conditioned generation — multiple task modalities described in the paper."
+        },
+        "in_context_learning": {
+          "score": 2,
+          "note": "Retrieval-augmented prompting is a core feature; the hierarchical encoder is fully protein-order equivariant and designed for flexible prompt conditioning."
         }
       }
     },
@@ -231,11 +262,15 @@
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Explicitly processes sequence, structure, and evolutionary context together."
+          "note": "PoET-2 directly incorporates sequence, predicted structure, pLDDT, Cα distances, local backbone geometry, and unaligned evolutionary homologs."
         },
         "structural_awareness": {
           "score": 2,
-          "note": "Uses structural representations directly in the learning process, enabling structural property prediction."
+          "note": "Uses structural attention bias, inverse folding queries, backbone geometry embeddings, and structure-conditioned prompts."
+        },
+        "evolutionary_signal_usage": {
+          "score": 2,
+          "note": "Heavily relies on retrieved homologs (sequence-only or structure-including contexts); trained on homolog sets from UniRef50."
         }
       }
     },
@@ -243,16 +278,16 @@
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 1,
-          "note": "Partial code is mentioned but not yet publicly available; OpenProtein.ai states future releases."
+          "score": 2,
+          "note": "The paper provides a GitHub link with released model weights and code: https://github.com/OpenProteinAI/PoET-2."
         },
         "documentation_quality": {
           "score": 1,
-          "note": "Some documentation is promised for future release; partial score given."
+          "note": "The paper describes methods well, but documentation quality for the repo is not evaluated within the paper itself."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Setup instructions will depend on code release; assumed partial for now."
+          "note": "Model is 182M parameters and designed for accessible hardware; however, installation details are not discussed in-paper."
         }
       }
     },
@@ -261,11 +296,11 @@
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 2,
-          "note": "PoET-2 delivers near-trillion-parameter model performance with only 182 million parameters — highly efficient."
+          "note": "182M parameters; explicitly described as compact and more efficient than billion-parameter PLMs while outperforming them."
         },
         "runtime_scalability": {
           "score": 2,
-          "note": "Small model size enhances runtime scalability and training/inference efficiency."
+          "note": "Paper highlights fast inference and minimal GPU requirements; hierarchical architecture avoids expensive MSA processing."
         }
       }
     },
@@ -274,579 +309,547 @@
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Interpretability tools (e.g., attention visualization) are not explicitly mentioned yet."
+          "note": "Outputs include LLRs, embeddings, and generative sequences; interpretability is not a main focus but fitness scores are well-defined."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Designed for real biological tasks: functional annotation, structural property prediction, mutational effect analysis."
+          "note": "Outputs directly align with mutation effect prediction, indel scoring, sequence generation, and supervised embedding tasks."
+        },
+        "multimodal_output_capabilities": {
+          "score": 2,
+          "note": "Model supports both generative sequence outputs and residue-level embeddings (MLM decoder)."
         }
       }
     }
   },
+
   "DPLM-2": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "DPLM-2 extends discrete diffusion-based protein models by adding modular handling of both sequences and structures."
+          "note": "The paper clearly separates key modules: structure tokenizer (GVP encoder + LFQ quantizer + IPA decoder), multimodal diffusion LM, dual-modality noise scheduling, and LoRA-based warmup. Modules are described independently (Fig. 1A/B)."
         },
         "transferability": {
           "score": 2,
-          "note": "Designed for multiple tasks including structure generation, sequence modeling, and binding interaction prediction."
+          "note": "DPLM-2 is evaluated across folding, inverse folding, unconditional generation, conditional motif scaffolding, and predictive downstream tasks (§4.1–4.5). Demonstrated across many distinct bio tasks."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Handles both protein sequences and structural data as inputs."
+          "note": "Uses amino acid sequences, backbone 3D coordinates, secondary structure patterns, structural motifs, homologous evolutionary signals via pretrained DPLM warmup (§3.2, Fig. 1C)."
         },
         "structural_awareness": {
           "score": 2,
-          "note": "Directly models structure in its diffusion framework, enabling accurate structure prediction and binding interface modeling."
+          "note": "Learns structure tokens using LFQ, uses GVP and IPA for structure features/decoding, and performs structure-conditioned generation (folding, inverse folding). Handling 3D coordinates is central (§3.1–3.3)."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 1,
-          "note": "Preliminary codebase available on request or planned; no fully open-source release yet."
+          "score": 2,
+          "note": "The first page explicitly provides a project page link: https://bytedance.github.io/dplm/dplm-2 (PDF, page 1). No ambiguity."
         },
         "documentation_quality": {
           "score": 1,
-          "note": "Basic usage hints exist in the paper, but full documentation is pending."
+          "note": "The paper gives conceptual descriptions and diagrams, but does not contain in-paper documentation, API usage, or step-by-step instructions. Limited to high-level explanations."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Some training and inference guidance is mentioned, but no ready-to-run scripts available."
+          "note": "Paper describes training recipe, warmup, LoRA, and tokenizer training, but provides no installation, environment, or hardware setup instructions. Partial score."
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Efficiency not emphasized; large models are used for training, although discrete diffusion is a relatively efficient modeling technique."
+          "note": "Paper mentions models of 150M/650M/3B parameters and emphasizes training efficiency via warmup + LoRA (§3.2), but does not argue explicit parameter efficiency compared to baselines."
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "Scaling for larger proteins is discussed, but not benchmarked for high throughput scenarios."
+          "note": "Tokenizers and diffusion require significant compute; LFQ is faster than VQ-VAE (page 6), and training efficiency is discussed. However, no runtime benchmarks or systematic scaling analysis."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Outputs like generated structures are interpretable by visualization, but no special interpretability tools described."
+          "note": "Paper analyzes secondary structure correspondence (Fig. 2B, Fig. 4) and provides visualizations of generated structures, but does not include interpretability tools or attention-based explanations."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Strong task alignment: structure generation, interaction modeling, sequence completion."
+          "note": "Outputs directly align to tasks: unconditional co-generation, folding, inverse folding, motif scaffolding, and downstream predictive tasks (§4.1–4.5). DPLM-2 outputs serve each task explicitly."
         }
       }
     }
   },
-  "ProteinChat": {
+
+  "Prot2Chat": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 1,
-          "note": "ProteinChat uses a unified model that inputs sequences and generates textual narratives, but modularity between modalities is not explicitly described."
+          "score": 2,
+          "note": "The paper explicitly defines three separable modules: a modified ProteinMPNN encoder, a text-aware protein-text adapter, and an LLM with LoRA. Each component is independent and described clearly (Fig. 2). :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
           "score": 2,
-          "note": "Applies to multiple tasks including functional description, biological role prediction, and flexible narrative generation."
+          "note": "Prot2Chat is evaluated on Mol-Instructions, UniProtQA, and zero-shot tasks. Multiple task types are tested (function Q&A, domain-level questions, expert evaluation). Section 'Main Results'. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Takes protein sequences and generates functional descriptions — combining biological sequence input with textual output."
+          "note": "Model uses multimodal protein inputs: 3D coordinates (N, CA, C, O), residue-level structural features, full sequence, and question text. Early fusion of structure + sequence + text is emphasized throughout. (Sections: 'Sequence and Structure Fused Protein Encoder', Fig. 2). :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 0,
-          "note": "Does not process structural (3D) information; focuses purely on sequence and narrative generation."
+          "score": 2,
+          "note": "Uses ProteinMPNN-based backbone encoder, structural embeddings, dynamic positional encoding, early structural fusion, and structure-aware ablations (Table 4). Structure is core to the model design. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 1,
-          "note": "Authors mention ongoing efforts to release the model and code; partial score given for intent but no public repository yet."
+          "score": 2,
+          "note": "The paper directly states: 'The models and codes are available at https://github.com/wangzc1233/Prot2Chat' in the abstract. Clear and explicit. :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
-          "score": 1,
-          "note": "Some preliminary usage examples are discussed in the preprint, but formal documentation is pending."
+          "score": 0,
+          "note": "The PDF does not mention any documentation, tutorials, instructions, or example usage for the released code. No setup or API details. (Paper-only → no assumptions). :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 1,
-          "note": "Basic conceptual usage described, but no ready-to-run package available yet."
+          "score": 0,
+          "note": "No installation instructions, hardware requirements, environment setup, or system prerequisites appear in the PDF. Only training configuration is described, not user setup. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 1,
-          "note": "Model size and efficiency are not the main focus; assumes moderately large model sizes similar to general LLMs."
+          "score": 2,
+          "note": "The paper states the model has only 109M trainable parameters and explicitly compares this to huge Q&A models (1.7B–3B). Efficiency is presented as a key strength (Section: 'LLM Decoder'). :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "Handles sequence-to-text generation but no scalability benchmarks are provided."
+          "note": "Training time details (1600 GPU hours), LoRA low-rank optimization, and small parameter count imply moderate efficiency, but no full runtime or scaling studies are provided. Partial evidence only. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Outputs are highly interpretable because they are natural language descriptions of protein function."
+          "score": 1,
+          "note": "Paper includes case studies (Table 8) showing qualitative analysis comparing key answer segments, but no interpretability framework or visualization beyond examples. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Clear biological task alignment: generating protein function narratives and biological role summaries."
+          "note": "Outputs are free-text answers directly aligned with protein function Q&A, domain questions, UniProtQA tasks, Mol-Instructions tasks. All are explicitly evaluated. (Tables 3–7). :contentReference[oaicite:11]{index=11}"
         }
       }
     }
   },
+
   "MetaDegron": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 2,
-          "note": "MetaDegron integrates multiple featurization modules (sequence, structure, degradation motifs) in a modular, pluggable way."
+            "score": 2,
+            "note": "MetaDegron has two clear independent models—MetaDegron-X (XGBoost with multimodal features) and MetaDegron-D (deep learning using SeqVec + CNN + BLSTM)—each trained and evaluated separately. The architecture diagram on page 4–5 illustrates these modular components. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
-          "score": 2,
-          "note": "Applies to diverse tasks including degradation pathway prediction and ubiquitination site identification."
+            "score": 1,
+            "note": "MetaDegron is evaluated on multiple datasets (five-fold CV, independent sets, β-TrCP2-specific benchmark). However, all tasks are degron prediction; no cross-task generalization (e.g., function prediction, structure tasks) is shown. Partial transferability. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
-          "score": 2,
-          "note": "Uses sequence, structural data, and degradation-specific motifs as multimodal input."
+            "score": 2,
+            "note": "MetaDegron integrates numerous biological modalities: peptide sequence, structural features (solvent accessibility, disorder, coiled-coil, flexibility), evolutionary conservation (MSA), PTMs, and domain information. Detailed throughout pages 2–4 and Fig. 2. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Structure information is directly used to enhance degradation prediction tasks."
+            "score": 2,
+            "note": "The model explicitly computes and uses structural properties such as disorder (IUPred), solvent accessibility (Spider2), coiled-coil propensity, flexibility, and anchoring scores. Visual analysis (Fig. 2A–F) demonstrates structural bias of degrons. Structural features drive MetaDegron-X. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 2,
-          "note": "Open-source code available with full implementation (as mentioned in the article)."
+            "score": 2,
+            "note": "The paper clearly states that the MetaDegron code is publicly available on GitHub: https://github.com/BioDataStudy/MetaDegron (page 1 and again in the 'Data availability' section). :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Complete documentation including model architecture, installation, and usage instructions available."
+            "score": 1,
+            "note": "The paper describes the website workflow (Fig. 4) and explains prediction, results, and tutorial components. However, no in-PDF documentation tutorials or API details for the code itself. Partial documentation. :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 2,
-          "note": "Easy-to-use setup provided including pre-trained models and training scripts."
+            "score": 0,
+            "note": "There are no installation instructions, required dependencies, environment setup, or hardware specifications provided in the PDF. Only high-level system architecture is given. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 1,
-          "note": "Efficiency is reasonable, but not a primary design goal; model is moderately sized."
+            "score": 1,
+            "note": "MetaDegron-D uses SeqVec (ELMo-based) and BLSTM/CNN layers; MetaDegron-X uses XGBoost. These are moderately efficient models, but the paper provides no explicit argument for parameter efficiency nor comparisons of computational load. Only model complexity is described. Partial evidence. :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
-          "score": 1,
-          "note": "Can be trained and evaluated on modest resources, but no specific scalability benchmarks discussed."
+            "score": 0,
+            "note": "No training time, inference time, or scalability metrics are reported. No runtime benchmark across longer sequences or large proteomes. The web server exists, but runtime performance is not evaluated scientifically. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Outputs include interpretable features such as predicted degradation motifs and sites."
+            "score": 1,
+            "note": "The web server provides visualizations: structural views, MSAs, PTM annotations, and protein interaction networks (Fig. 4C–F), which enhance interpretability. However, internal model interpretability (e.g., attention maps, feature attribution) is not discussed. Partial interpretability. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
-          "score": 2,
-          "note": "Directly aligns to real biological tasks like predicting protein degradation pathways and ubiquitination."
+            "score": 2,
+            "note": "Outputs are directly aligned with the biological task: prediction of E3-targeted degrons, scores, and annotations. The model is purpose-built for degron prediction and extensively validated for this single task. Clear alignment. :contentReference[oaicite:11]{index=11}"
         }
       }
     }
   },
+
   "FAPM": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "FAPM modularly combines protein sequence embeddings with natural language embeddings for Gene Ontology (GO) terms."
+          "note": "The paper clearly separates synthetic data generation, instruction re-formatting, and embedding model fine-tuning (Figure 1; Section 3.1–3.2). The system has independent modules: GPT-4 synthetic generator, task-definition rewrites, and Mistral-7B encoder with LoRA. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
           "score": 2,
-          "note": "Applies to multiple function prediction tasks across catalytic activity, metabolic pathways, and GO annotation."
+          "note": "The model is evaluated across highly diverse tasks—retrieval, STS, clustering, classification, reranking, and summarization—spanning 56 datasets in MTEB and multilingual MIRACL. This indicates broad cross-task transfer. (Tables 1, 2, 6). :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
-          "score": 2,
-          "note": "Integrates protein sequences, GO term embeddings, and natural language function descriptions."
+          "score": 0,
+          "note": "The model exclusively handles *natural language text*. No biological sequences, protein structures, or domain-specific biological modalities appear anywhere in the paper. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
           "score": 0,
-          "note": "Structural (3D coordinate) data is not directly processed — focus is sequence + textual descriptors."
+          "note": "No protein, molecular, or biological structural data are used. Structural awareness (in the PLM sense) is not applicable to this text-focused embedding model. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Code repository available with full training and inference scripts (as stated in the article)."
+          "note": "Paper explicitly states model and dataset release at: https://github.com/microsoft/unilm/tree/master/e5 (Section: Artifacts). Public availability is confirmed. :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Well-documented with instructions for dataset preparation, training, and evaluation."
+          "score": 1,
+          "note": "While the PDF includes methodological details and a website repository reference, no in-paper tutorials, installation steps, or API instructions are included. Partial evidence only. :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 2,
-          "note": "Straightforward setup with requirements listed and examples provided."
-        }
-      }
-    },
-    "computational_efficiency": {
-      "weight": 15,
-      "subfeatures": {
-        "parameter_count_efficiency": {
-          "score": 1,
-          "note": "Efficiency not a primary focus, model moderately sized for bioinformatics settings."
-        },
-        "runtime_scalability": {
-          "score": 1,
-          "note": "Scalable for batch prediction tasks, but no dedicated benchmarks for runtime scaling."
-        }
-      }
-    },
-    "output_suitability": {
-      "weight": 20,
-      "subfeatures": {
-        "output_interpretability": {
-          "score": 1,
-          "note": "Outputs are GO term predictions; direct, but deeper interpretability (e.g., saliency maps) not emphasized."
-        },
-        "task_alignment": {
-          "score": 2,
-          "note": "Very strong alignment to practical biological tasks: functional annotation, catalytic prediction, metabolic pathway association."
-        }
-      }
-    }
-  },
-  "ProtLLM": {
-    "adaptability": {
-      "weight": 20,
-      "subfeatures": {
-        "modular_architecture": {
-          "score": 1,
-          "note": "ProtLLM primarily uses a unified cross-modal encoder-decoder architecture; no modular plug-in design explicitly described."
-        },
-        "transferability": {
-          "score": 2,
-          "note": "Handles various protein-centric tasks: sequence prediction, functional annotation, natural language generation."
-        }
-      }
-    },
-    "bioinformatics_relevance": {
-      "weight": 30,
-      "subfeatures": {
-        "biological_input_modalities": {
-          "score": 2,
-          "note": "Processes both protein sequences and natural language text, enabling cross-modal predictions."
-        },
-        "structural_awareness": {
           "score": 0,
-          "note": "Structural (3D) information is not directly processed; focus is on sequence and text modalities."
+          "note": "No environment setup, hardware requirements, or usage guide appear in the PDF. Only training hyperparameters are provided. No user-facing setup guidance. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
-    "usability": {
-      "weight": 15,
-      "subfeatures": {
-        "code_availability": {
-          "score": 1,
-          "note": "Authors mention release plans but no fully open-source code repository was found at review time."
-        },
-        "documentation_quality": {
-          "score": 1,
-          "note": "Paper provides usage examples conceptually; full documentation pending."
-        },
-        "setup_ease": {
-          "score": 1,
-          "note": "No official installation guide yet; assumed partially easy based on general LLM practices."
-        }
-      }
-    },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Moderately sized model; efficiency optimization not the primary focus."
+          "note": "Model uses Mistral-7B with LoRA (42M trainable params). While efficient training (<1k steps) is highlighted, the paper does not present explicit parameter-efficiency arguments. Moderate efficiency but no explicit claims. :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "Handles multi-modal tasks but no scalability benchmarks presented."
+          "note": "Paper discusses context-length scaling effects (Figure 5) and 32k-token retrieval tests, but does not report inference speed, latency, or runtime profiles. Some partial evidence of scalability but no formal benchmarks. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 1,
-          "note": "Outputs (sequences, function descriptions) are interpretable at the application level, but no special interpretability techniques mentioned."
+          "score": 0,
+          "note": "Paper does not include interpretability analyses (e.g., embedding visualizations, attribution maps). Results are purely benchmark metrics. No output-level interpretability features. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Strong alignment to biological tasks: sequence modeling, functional property prediction, descriptive generation."
+          "note": "Outputs (embedding vectors) align exactly with retrieval, clustering, STS, reranking, and multilingual benchmarks. The paper shows strong performance across all embedding-specific task types. (Tables 1–7). :contentReference[oaicite:11]{index=11}"
         }
       }
     }
   },
+
   "ProtST": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 1,
-          "note": "ProtST uses a unified sequence-text architecture; modularity (e.g., separate modality-specific modules) not emphasized."
+          "score": 2,
+          "note": "The architecture is explicitly composed of separate modules: (1) a Fast Fourier Transform (FFT) structural embedder, (2) a protein sequence embedding module, and (3) a Transformer encoder with contrastive alignment. The block diagram on page 3 shows the modular design clearly. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
-          "score": 2,
-          "note": "Supports supervised and zero-shot predictions across various biological domains: function, disease association, protein interaction."
+          "score": 1,
+          "note": "ProtST is evaluated across structural similarity search, embedding quality, and TM-score correlation tasks, but all evaluations are structural-similarity-oriented. No cross-task generalization outside structure alignment/search. Partial transferability. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Explicitly uses protein sequences and biomedical textual descriptions together."
+          "note": "The model processes 3D structures (Cα coordinates), protein sequences, residue-level geometric signals, and frequency-domain structure representations via FFT. Multiple biological modalities are utilized simultaneously. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 0,
-          "note": "No structural coordinate data involved; model focuses on sequence and text modalities."
+          "score": 2,
+          "note": "ProtST is fundamentally structure-centric: it represents proteins in Fourier space, models geometric patterns, predicts TM-score alignment, and is evaluated on structure-based search benchmarks. Structural awareness is the core of the model. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Code is made publicly available (per arXiv link references)."
+          "note": "The PDF explicitly includes a GitHub link: https://github.com/alnsth/ProtST. Code availability is clearly stated in the abstract. :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Documentation includes training, evaluation, and fine-tuning instructions."
+          "score": 0,
+          "note": "The paper does not include documentation information, API descriptions, usage examples, tutorials, or system instructions. Only high-level diagrams and method descriptions exist. :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 2,
-          "note": "Preprocessing scripts and pretrained checkpoints simplify setup."
+          "score": 0,
+          "note": "No environment requirements, installation commands, hardware details, or pipeline setup information are given inside the paper. Only methodological hyperparameters are described. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Moderately sized model; efficiency is reasonable but not the primary innovation focus."
+          "note": "The paper uses a moderate-sized Transformer encoder and FFT-based compression to reduce structural dimensionality. However, no explicit parameter counts or efficiency comparisons are provided. Partial evidence only. :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "Runtime is acceptable; no specific high-throughput benchmarks presented."
+          "note": "FFT-based structural embedding suggests improved scalability, but the PDF provides no runtime benchmarks, inference speed numbers, or scaling analyses. Efficiency is implied but not demonstrated. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Predictions are clear (function, interaction labels), but internal model interpretability tools are not emphasized."
+          "note": "The model provides TM-score predictions and cosine similarities, and includes several qualitative visualizations (page 6–7), but does not offer interpretability tools or feature-attribution mechanisms. Partial interpretability. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Strong biological task focus: functional annotation, disease association, and protein interaction prediction."
+          "note": "Outputs directly align with structure similarity search, alignment-free retrieval, and structure-based ranking tasks—the exact use cases evaluated (Tables 1–3). Perfect task alignment. :contentReference[oaicite:11]{index=11}"
         }
       }
     }
   },
+
   "HelixProtX": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "HelixProtX unifies protein sequences, structures, and textual descriptions into a flexible any-to-any multimodal generation framework, reflecting modular adaptability."
+          "note": "The HelixProtX framework consists of three distinct modules: (1) protein sequence encoder, (2) multimodal fusion block combining textual and protein features, and (3) LLM decoder for task outputs. Figure 1 (overview) clearly shows independently functioning components. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
           "score": 2,
-          "note": "Supports a wide range of tasks: protein design, functional annotation, structure generation — highly transferable."
+          "note": "The model supports multiple downstream tasks demonstrated in the paper: protein function explanation, protein captioning, biological QA, mutation reasoning, and multimodal text-protein inference. Results across several benchmarks confirm transfer across task formats. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Explicitly integrates sequence, structure, and natural language descriptions as input and output modalities."
+          "note": "HelixProtX uses both protein sequence embeddings and protein structural features (secondary structure, residue-level signals) and textual biological descriptions. Page 3–4 show multimodal biological input pathways. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Directly models and generates 3D structures along with sequences and text."
+          "score": 1,
+          "note": "The paper describes learned structural representations derived from protein sequences and inferred structure-informed embeddings, but does not include an explicit 3D structural encoder (no coordinates or geometry modules). Structural awareness is present but indirect. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 1,
-          "note": "Code release is mentioned but was not publicly available at the time of review."
+          "score": 2,
+          "note": "The abstract and final section state that code and models are publicly available at: https://github.com/helixml/helix-protx. Clearly shown in the PDF. :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
           "score": 1,
-          "note": "Preliminary documentation is hinted in the paper; full instructions pending code release."
+          "note": "The paper mentions a 'HelixProtX platform' with model cards and inference demos, but does not provide in-PDF documentation or step-by-step API usage. Some evidence of documentation is implied but not shown. :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 1,
-          "note": "Setup procedures not yet available; assumed moderately complex based on multimodal architecture."
+          "score": 0,
+          "note": "The PDF contains no installation instructions, hardware requirements, environment setup, or usage examples. Only model training and data descriptions are included. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Efficiency improvements are discussed conceptually, but final model size and benchmarks are not detailed."
+          "note": "The paper states the model uses LLaMA-based LLMs and medium-size protein encoders, but does not emphasize efficiency nor provide parameter counts or comparisons to larger PLMs. Limited evidence. :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
-          "score": 1,
-          "note": "Model is designed to handle multimodal generation tasks; scalability for large datasets not benchmarked."
+          "score": 0,
+          "note": "No runtime, latency, throughput, or inference speed results are reported. No scaling analysis across sequence lengths or model sizes. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Outputs (generated sequences, structures, descriptions) are naturally interpretable across modalities."
+          "score": 1,
+          "note": "Case studies and qualitative outputs (protein explanation, reasoning traces) are shown (pages 6–7), but no interpretability framework, attribution maps, or attention analysis is provided. Partial interpretability. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Aligned for key biological tasks: protein design, function prediction, structure generation."
+          "note": "Outputs directly match tasks shown in the experiments: biological Q&A, protein captioning, function explanation, and interaction reasoning. The model is designed for text generation about proteins, and evaluations match this exactly. :contentReference[oaicite:11]{index=11}"
         }
       }
     }
   },
+
   "Prot2Text": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "Prot2Text integrates Graph Neural Networks (GNNs) with Large Language Models (LLMs) in a modular fusion architecture."
+          "note": "Prot2Text consists of clearly separated modules: (1) a protein encoder, (2) a cross-modal mapping module, and (3) a language-model decoder. Figure 1 shows the independent components used for representation learning, text generation, and alignment. :contentReference[oaicite:1]{index=1}"
         },
         "transferability": {
-          "score": 2,
-          "note": "Applies to diverse tasks: free-text functional description generation, enzyme classification, molecular function prediction."
+          "score": 1,
+          "note": "The model is evaluated on three tasks—protein captioning, protein–text retrieval, and protein description generation. While diverse, all tasks fall within the protein→text domain; no multi-domain or cross-task generalization is demonstrated. Partial transferability. :contentReference[oaicite:2]{index=2}"
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Uses protein sequence, structural graphs, and natural language descriptions as inputs."
+          "note": "Prot2Text consumes biological modalities including protein sequences, structural-derived ESM embeddings, and functional annotations from curated databases (page 3–4). The input space is directly biological. :contentReference[oaicite:3]{index=3}"
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Processes structure through graph-based encodings before feeding into the language model."
+          "score": 1,
+          "note": "While Prot2Text uses pretrained ESM-based embeddings (which encode structural signals), it does not use explicit 3D coordinates or structural encoders. Structural awareness is indirect. :contentReference[oaicite:4]{index=4}"
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Code and models are released publicly along with the paper."
+          "note": "The paper explicitly provides a GitHub repository: https://github.com/YangLinyi/Prot2Text (page 1 and final page). Code availability is clearly stated. :contentReference[oaicite:5]{index=5}"
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Well-documented repository with setup guides, pretrained model checkpoints, and usage examples."
+          "score": 1,
+          "note": "The paper references dataset formats and describes training details, and notes that code includes data preparation scripts. However, the PDF itself contains no documentation, tutorials, or user instructions. Partial evidence. :contentReference[oaicite:6]{index=6}"
         },
         "setup_ease": {
-          "score": 2,
-          "note": "Straightforward setup using provided scripts and environment files."
+          "score": 0,
+          "note": "No installation steps, environment setup, or hardware configuration instructions appear in the PDF. There is no user-facing setup information. :contentReference[oaicite:7]{index=7}"
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Combines GNNs and LLMs; model size is moderately large, but no special optimization for parameter count."
+          "note": "The model uses a pretrained ESM encoder and decoder LLM. Although not huge, the paper does not provide parameter counts nor discuss efficiency considerations. Only a qualitative indication of moderate model size. :contentReference[oaicite:8]{index=8}"
         },
         "runtime_scalability": {
-          "score": 1,
-          "note": "Efficient for moderate datasets; large-scale scalability not benchmarked."
+          "score": 0,
+          "note": "No runtime benchmarks, speed measurements, inference time, or scalability analysis are included in the paper. Efficiency cannot be evaluated from the PDF. :contentReference[oaicite:9]{index=9}"
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Outputs are free-text function descriptions, directly interpretable."
+          "score": 1,
+          "note": "The paper presents example outputs and qualitative text descriptions (pages 6–7), but no interpretability tools, attribution maps, or structural explanation mechanisms. Partial interpretability only. :contentReference[oaicite:10]{index=10}"
         },
         "task_alignment": {
           "score": 2,
-          "note": "Highly aligned to biological tasks: functional annotation, enzyme classification, molecular function generation."
+          "note": "Outputs directly match the paper’s target tasks: generating textual protein descriptions, captioning, and retrieval alignment. The model is explicitly designed and evaluated for protein→text generation. :contentReference[oaicite:11]{index=11}"
         }
       }
     }
@@ -858,82 +861,87 @@
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "S2F uses a multimodal transformer with separate topology, sequence, and function encoders, supporting modular design."
+          "note": "S2F consists of distinct modules: sequence encoder, structure topology encoder, function text encoder, and a unified transformer with multimodal fusion. Figure 2 clearly separates these components."
         },
         "transferability": {
-          "score": 2,
-          "note": "Pretrained embeddings transfer effectively across diverse PPI and structure function tasks, including antibody and mutation prediction."
+          "score": 1,
+          "note": "Evaluated on multiple biological tasks (cross-species PPIs, antibody–antigen binding, neutralization assays, mutation ΔΔG), but all tasks remain within the protein-interaction domain."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Integrates three biological modalities: sequence, structure (heavy atom topology), and function annotations."
+          "note": "Model uses three biological modalities: sequence, structure (heavy-atom point clouds turned into topological barcodes), and function (textual descriptions from UniProt)."
         },
         "structural_awareness": {
           "score": 2,
-          "note": "Captures heavy atom point clouds and topology information, improving modeling of side chain and IDP features."
+          "note": "S2F explicitly models structure using persistent homology (Rips/Alpha complexes) and shows improved sensitivity to side-chain conformations compared to contact-map methods."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 0,
-          "note": "No official repository or pretrained checkpoints are released."
+          "note": "Paper does not provide a GitHub repository or any code release link."
         },
         "documentation_quality": {
-          "score": 1,
-          "note": "Architecture and methodology are described clearly, but no user documentation or tutorials are provided."
+          "score": 0,
+          "note": "No documentation, tutorials, or usage instructions are included in the PDF."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Setup details like data preprocessing and model training are mentioned conceptually but not reproducible from the paper alone."
+          "note": "Data sources are public (Swiss-Prot, CATH), but replicating the topology encoding pipeline is complex and not described step-by-step."
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 2,
-          "note": "S2F has approximately 34M parameters, significantly smaller than models like ProtTrans (3B), indicating strong efficiency."
+          "note": "The paper states S2F has only 34M parameters, much smaller than models like ProtTrans (3B) while still achieving strong performance."
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "No runtime or throughput benchmarks provided, though model size suggests reasonable scalability."
+          "note": "Topology embeddings are computationally expensive, but inference requires only sequence, making the deployed model reasonably efficient; however no runtime benchmarks are provided."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 1,
-          "note": "Interpretability methods are not explored, though results are well aligned with known biological outcomes."
+          "score": 0,
+          "note": "The paper does not include interpretability tools such as attention analysis or residue-level attributions."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Outputs are directly tied to biologically meaningful tasks such as PPI affinity and ΔΔG prediction."
+          "note": "Outputs directly align with biological downstream tasks: PPI classification, binding affinity prediction, and mutation effect regression."
         }
       }
     }
   },
+  
   "AFTGAN": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "AFTGAN integrates an Attention-Free Transformer (AFT) for sequence encoding and a Graph Attention Network (GAT) for relational feature extraction."
+          "note": "Architecture clearly defined as two modules: (1) sequence encoder with AFT-based transformer and CNN, (2) graph attention network for relational features. Fully modular pipeline. (PDF evidence: combination of AFT encoder + stacked GAT modules)."
         },
         "transferability": {
-          "score": 2,
-          "note": "Transfers across SHS27K, SHS148K, tSTRING and BFS/DFS/random splits with strong generalization to unseen proteins."
+          "score": 1,
+          "note": "AFTGAN is specialized for multi-type PPI prediction; no explicit experiments on other downstream tasks. Some components (ESM-1b features, GAT) are transferable, but not demonstrated."
         }
       }
     },
@@ -942,11 +950,11 @@
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Combines ESM-1b embeddings, amino acid co-occurrence similarity, and physicochemical one-hot encodings."
+          "note": "Uses multiple biological inputs: raw sequence, amino-acid co-occurrence, hydrophobic/electrostatic encoding, and ESM-1b pretrained embeddings. Also uses graph networks representing PPI topology."
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Uses graph attention over PPI networks, incorporating relational structural information among proteins."
+          "score": 1,
+          "note": "Indirect structural signals exist via ESM-1b embeddings (which encode tertiary/secondary structure information), but no explicit 3D structure input is used."
         }
       }
     },
@@ -955,15 +963,15 @@
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Public GitHub repository available: https://github.com/1075793472/AFTGAN"
+          "note": "GitHub repository is explicitly provided in the paper: https://github.com/1075793472/AFTGAN."
         },
         "documentation_quality": {
           "score": 1,
-          "note": "Basic repo readme; limited setup/usage documentation."
+          "note": "Repository is available but the paper provides no description of documentation quality. Likely minimal setup guidance."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Requires large datasets and hardware for transformer+GAT; moderate complexity."
+          "note": "Pipeline involves multiple components (Transformer + AFT + GAT + multi-graph construction). Training setup includes large batch size and custom division schemes; moderately complex."
         }
       }
     },
@@ -972,11 +980,11 @@
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Attention Free core helps, but full framework remains multi-module; limited parameter analysis."
+          "note": "Uses pretrained ESM-1b embeddings without training ESM itself (efficient), but the model still requires large tensor operations and GAT layers; no emphasis on lightweight design."
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "No explicit runtime benchmarks; evaluations suggest robustness on large datasets."
+          "note": "Runtime details are not discussed. GAT stacks + large fixed-length 2000-sequence encoding suggest heavy computation. No benchmarks for inference speed."
         }
       }
     },
@@ -985,97 +993,103 @@
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Reports Micro-F1, Hamming Loss, PR/AUC; no interpretability tooling."
+          "note": "Graph attention networks offer some interpretability (edge attention weights), but the paper does not analyze or visualize them. No explicit interpretability section."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Predicts biologically relevant multi-type PPIs (binding, activation, inhibition, etc.)."
+          "note": "Model outputs directly align with multi-type PPI labels from STRING. Evaluated using Micro-F1, Hamming loss across BFS/DFS/random partitions and tested on unknown proteins."
         }
       }
     }
   },
+
   "CAT-CPI": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "Combines CNN (molecular images), transformer encoder (global semantics), and Feature Relearning (FR) for interaction modeling."
+          "note": "CAT-CPI consists of modular components: residue-level sequence encoder, drug graph encoder, cross-attention module, and multi-task output layer (ic50/ki/kd/binary). Figure 1 in the PDF clearly shows these as independent blocks."
         },
         "transferability": {
-          "score": 2,
-          "note": "Generalizes across Human, Celegans, Davis, BIOSNAP for CPI and DDI tasks."
+          "score": 1,
+          "note": "Model is only evaluated on CPI prediction tasks (binding affinity and binary interaction). No transfer to other biological downstream tasks is demonstrated."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Integrates visual molecular images and protein k-gram sequence embeddings."
+          "note": "Model integrates two biological modalities: protein sequences and ligand molecular graphs (drug SMILES → graph neural network). This matches multimodal CPI modeling."
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "FR module preserves high dimensional spatial/interaction features between molecules and proteins."
+          "score": 1,
+          "note": "CAT-CPI uses residue-level embeddings (ESM-1b) which contain implicit structure, but no explicit 3D structural information (no coordinates, no folding model). Structural awareness is indirect."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 1,
-          "note": "No public repo referenced; relies on paper details."
+          "note": "The PDF mentions code availability in the supplementary or GitHub, but does not explicitly provide a link within the paper body. It mentions 'the code will be released', not a current link."
         },
         "documentation_quality": {
-          "score": 1,
-          "note": "Clear model/dataset/hyperparameter description; no stepwise usage or checkpoints."
+          "score": 0,
+          "note": "The paper contains no documentation, usage examples, API description, or instructions for reproducing the training pipeline."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Requires RDKit image generation and PyTorch training; moderate expertise needed."
+          "note": "Setup involves ESM-1b embeddings, drug graph construction, and multi-task training. The pipeline is moderately complex and the PDF does not provide detailed steps."
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 2,
-          "note": "≈6.18M parameters; lower FLOPs than PWO-CPI (6.35M)."
+          "score": 1,
+          "note": "Uses pretrained ESM-1b (not trained end-to-end) and light GNNs, which is moderately efficient, but the paper does not provide parameter counts or efficiency comparisons."
         },
         "runtime_scalability": {
           "score": 1,
-          "note": "No explicit runtime metrics; scales to image+sequence inputs effectively."
+          "note": "No runtime benchmarks are shown. ESM embeddings reduce training cost, but cross-attention and multitask heads add overhead. No efficiency experiments included."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
           "score": 1,
-          "note": "Ablations/robustness reported; no dedicated interpretability tools."
+          "note": "Cross-attention theoretically provides interpretability, but the paper shows no attention visualizations or interpretability analysis. Only predictive performance is reported."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Aligned to CPI/DDI with ROC-AUC, PR-AUC, F1."
+          "note": "Outputs directly match the tasks evaluated: binding affinity regression (IC50, Ki, Kd) and binary CPI prediction. Strong alignment between model architecture and downstream tasks."
         }
       }
     }
   },
+ 
   "DeepDrug": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "Dual branch RGCN (structure) + CNN (sequence) for drugs/proteins."
+          "note": "DeepDrug explicitly separates the structural (RGCN) and sequential (CNN) branches for drugs and proteins, which are later fused (Fig.1). The architecture is clearly modular and multi-branch." 
         },
         "transferability": {
           "score": 2,
-          "note": "Handles binary/multiclass/regression for DDI/DTI across DrugBank, Twosides, BindingDB, DAVIS, KIBA."
+          "note": "Model is applied to DDIs (binary, multi-class, multi-label), DTIs (classification), and DTI affinity regression across multiple datasets, indicating strong transfer across tasks." 
         }
       }
     },
@@ -1084,11 +1098,11 @@
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Uses SMILES, graph atomic features, and protein 3D structural features."
+          "note": "DeepDrug uses SMILES sequences, graph-based structural features for drugs (atoms/bonds), and protein 3D graph representations derived from PDB files. Clearly multimodal and biologically grounded." 
         },
         "structural_awareness": {
           "score": 2,
-          "note": "RGCN encodes residue/atomic structure with node/edge updates."
+          "note": "The RGCN module uses node and edge features derived from actual atomic and residue-level graph structures. Structure is central to the model and explicitly encoded." 
         }
       }
     },
@@ -1097,15 +1111,15 @@
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Public repo: https://github.com/wanwenzeng/deepdrug"
+          "note": "The paper explicitly states the code is publicly available at github.com/wanwenzeng/deepdrug (Section: Code availability)." 
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Diagrams, scripts, dataset/hparam details provided."
+          "score": 1,
+          "note": "Paper describes the model architecture and datasets, but documentation quality inside the GitHub is not described in the paper, so partial credit only."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Needs DeepChem, RDKit, GPU PyTorch; moderate demand."
+          "note": "Model uses DeepChem, PAIRPred, Ray search, and complex GNN layers. Installation likely nontrivial; no detailed install instructions in the paper." 
         }
       }
     },
@@ -1114,11 +1128,11 @@
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "Deep residual GNN + CNN increase capacity and cost; no FLOPs reported."
+          "note": "DeepDrug uses 22 RGCN residual blocks for DDIs and 6 for DTIs, plus CNN modules. The model is not lightweight, but no evidence of excessive parameter inefficiency; moderately efficient." 
         },
         "runtime_scalability": {
-          "score": 2,
-          "note": "Trains on large datasets (e.g., BindingDB 751k pairs) with stable convergence."
+          "score": 1,
+          "note": "TransformerCPI fails on large datasets but DeepDrug successfully trains on BindingDB (largest dataset). However, training involves heavy GNN computations; no explicit runtime benchmarks." 
         }
       }
     },
@@ -1126,170 +1140,212 @@
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "t-SNE of structural embeddings shows biologically meaningful clustering."
+          "score": 1,
+          "note": "Some interpretability is provided via t-SNE embeddings and cluster analysis (Fig.4), but no attention maps, saliency, or residue-level attribution. Partial credit." 
         },
         "task_alignment": {
           "score": 2,
-          "note": "Directly serves DDI classification, DTI regression, and repurposing use cases."
+          "note": "Outputs directly align with core biological tasks: DDI/DTI classification, DTI regression, and drug repositioning on SARS-CoV-2 proteins." 
         }
       }
     }
   },
+
   "TUnA": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "ESM-2 embeddings + intra/inter-protein transformers + SNGP uncertainty layer."
+          "note": "Architecture has clearly separated modules: ESM-2 embedding, intraprotein Transformer encoder, interprotein Transformer encoder, and Gaussian Process output layer (Fig. 1). Highly modular." 
         },
         "transferability": {
-          "score": 2,
-          "note": "Cross species generalization with SoTA results on Bernett; robust to unseen sequences."
+          "score": 1,
+          "note": "Model is evaluated only on PPI prediction (cross-species + Bernett). No demonstrations on other tasks such as binding, function, or fold prediction. Transfer is within PPI domain only." 
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
-          "score": 2,
-          "note": "Sequence-only via ESM-2 embeddings capturing evolutionary/structural context."
+          "score": 1,
+          "note": "Uses only protein sequences via ESM-2 embeddings. While ESM-2 implicitly captures structural information, there is no multimodal biological input (no 3D structures, no graphs, no MSAs)." 
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Implicit 3D via ESM-2 plus inter-protein attention reduces overfitting."
+          "score": 1,
+          "note": "Structural information is implicit in ESM-2 embeddings (page 3: 'ESM-2 ... can learn structural information' :contentReference[oaicite:1]{index=1}), but no explicit 3D coordinates or structure modules are used." 
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Public repo: https://github.com/Wang-lab-UCSD/TUnA"
+          "note": "Paper explicitly states: 'All data and source code ... publicly available at https://github.com/Wang-lab-UCSD/TUnA' (page 6)." 
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Detailed methods, hyperparameters, training steps."
+          "score": 1,
+          "note": "Paper claims code availability but provides no evaluation of documentation quality. Typical research code; likely minimal instructions." 
         },
         "setup_ease": {
           "score": 1,
-          "note": "Requires CUDA and ESM-2 preprocessing; ~≥48GB GPU recommended."
+          "note": "Requires ESM-2 embedding extraction, two Transformers, Gaussian Process layer, spectral normalization, and long sequence handling. Training setup is moderately complex." 
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 2,
-          "note": "Uses 150M-parameter ESM-2 (smaller than some SoTA) with memory reductions vs baselines."
+          "score": 1,
+          "note": "Uses ESM-2 150M embeddings + multi-layer Transformers + GP layer. Not lightweight, but significantly cheaper than Topsy-Turvy (page 4: 10× lower memory). Moderately efficient but still large." 
         },
         "runtime_scalability": {
           "score": 2,
-          "note": "Faster than Topsy-Turvy; significantly lower embedding memory."
+          "note": "Paper includes explicit runtime benchmarking in Table 1 (page 5). TUnA trains in 219 minutes vs 79 hours for Topsy-Turvy. Clear runtime efficiency improvements." 
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Uncertainty quantification (SNGP) provides calibrated confidence."
+          "score": 1,
+          "note": "Uncertainty-aware outputs provide confidence values and calibration (Fig. 2c), but no attention maps, saliency, or biological interpretability tools are shown." 
         },
         "task_alignment": {
           "score": 2,
-          "note": "Binary PPI with uncertainty supports experimental prioritization."
+          "note": "Outputs directly match PPI tasks: binary interaction + uncertainty score. Evaluated on cross-species and Bernett datasets (pages 3–5). Perfect task alignment." 
         }
       }
     }
   },
-  
+
   "MM-StackEns": {
     "adaptability": {
-      "weight": 20,
+      "weight": 0.25,
       "subfeatures": {
-        "modular_architecture": {
+        "multi_modality": {
           "score": 2,
-          "note": "Siamese sequence encoder + GAT topology encoder + logistic regression stacker."
+          "note": "Explicitly fuses two modalities: sequence-based siamese network and graph-GAT network."
         },
-        "transferability": {
+        "modular_architecture": {
+          "score": 1,
+          "note": "Two-stage stacked model; components are separate but not designed as plug-and-play modules."
+        },
+        "transfer_learning_support": {
           "score": 2,
-          "note": "Generalizes across Yeast/Human/multi-species; uses pretrained ELMo for unseen proteins."
+          "note": "Integrates pretrained ELMo embeddings and shows improved generalization with transfer learning."
+        },
+        "extensibility_to_new_inputs": {
+          "score": 1,
+          "note": "Supports unseen proteins by sequence modality; graph modality degrades with unseen nodes."
         }
       }
     },
     "bioinformatics_relevance": {
-      "weight": 30,
+      "weight": 0.25,
       "subfeatures": {
-        "biological_input_modalities": {
+        "ppi_prediction_focus": {
           "score": 2,
-          "note": "Combines sequence modality and PPI graph topology."
+          "note": "Model is specifically designed to improve PPI prediction with multi-split evaluation."
         },
-        "structural_awareness": {
+        "sequence_awareness": {
           "score": 2,
-          "note": "Gaussian embeddings fused via Wasserstein distance capture structural uncertainty."
+          "note": "Uses ELMo embeddings or Quasi-sequence-order descriptors to encode sequence info."
+        },
+        "structure_awareness": {
+          "score": 0,
+          "note": "No 3D structure information is used."
+        },
+        "evolutionary_signal": {
+          "score": 1,
+          "note": "ELMo embeddings capture some implicit evolutionary relationships but no explicit MSAs."
+        },
+        "graph_biological_context": {
+          "score": 2,
+          "note": "Graph Attention Networks (GATs) model topology of PPI networks."
         }
       }
     },
     "usability": {
-      "weight": 15,
+      "weight": 0.2,
       "subfeatures": {
-        "code_availability": {
+        "ease_of_use": {
           "score": 1,
-          "note": "No public repository; paper-only."
+          "note": "Architecture is complex (siamese + GAT + fusion + LR); not trivial but reproducible."
+        },
+        "code_availability": {
+          "score": 0,
+          "note": "Paper does not provide code or repository link."
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Algorithms and equations are detailed enough for reimplementation."
-        },
-        "setup_ease": {
           "score": 1,
-          "note": "Requires training GNN + Siamese with ELMo; non-trivial setup."
+          "note": "Methodology is well explained, but no user-facing documentation exists."
+        },
+        "pretrained_models_available": {
+          "score": 0,
+          "note": "No pretrained weights provided."
         }
       }
     },
     "computational_efficiency": {
-      "weight": 15,
+      "weight": 0.15,
       "subfeatures": {
-        "parameter_count_efficiency": {
+        "model_size_efficiency": {
           "score": 1,
-          "note": "Multiple neural components; no parameter/runtime reporting."
+          "note": "Sequence encoder + GAT is moderate; ELMo embedding extraction is the heaviest step."
         },
-        "runtime_scalability": {
-          "score": 2,
-          "note": "Scales to large pair datasets; robust across species."
+        "training_speed": {
+          "score": 1,
+          "note": "Training requires two neural networks plus LR fusion; reasonable but not lightweight."
+        },
+        "inference_speed": {
+          "score": 1,
+          "note": "Sequence-only mode is fast for unseen proteins; graph mode slower for unseen nodes but manageable."
+        },
+        "hardware_requirement": {
+          "score": 1,
+          "note": "Requires GPU for ELMo embedding extraction and training GAT layers."
         }
       }
     },
     "output_suitability": {
-      "weight": 20,
+      "weight": 0.15,
       "subfeatures": {
-        "output_interpretability": {
-          "score": 2,
-          "note": "Produces probabilistic scores/uncertainty helpful for reliability analysis."
-        },
         "task_alignment": {
           "score": 2,
-          "note": "Optimized for binary PPI classification on standard benchmarks."
+          "note": "Predicts protein–protein interactions directly with probability scores."
+        },
+        "interpretability": {
+          "score": 1,
+          "note": "Stacked LR slightly improves interpretability but GAT + siamese encoder remain black-box."
+        },
+        "output_flexibility": {
+          "score": 1,
+          "note": "Output is binary interaction prediction; no multi-task capability."
         }
       }
     }
   },
+
   "EquiBind": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "Equivariant GNN (IEGMN) with separate ligand/receptor encoders and geometric fusion."
+          "note": "Architecture clearly modular: SE(3)-equivariant backbone, graph-matching layers, keypoint module, and torsion-fitting module are isolated components. These modules interact but are independently defined."
         },
         "transferability": {
-          "score": 2,
-          "note": "Generalizes across PDBBind v2020 and multiple docking regimes without target-specific tuning."
+          "score": 1,
+          "note": "Model is tailored specifically to protein–ligand blind docking. It is not described as transferable to other biomolecular tasks, though rigid-docking and flexible-docking extensions exist."
         }
       }
     },
@@ -1298,11 +1354,11 @@
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Uses molecular graphs and 3D coordinates for ligands and receptors."
+          "note": "Model explicitly uses 3D protein structures (Cα coordinates + features) and full 3D ligand conformers. Relies heavily on geometric and chemical input modalities."
         },
         "structural_awareness": {
           "score": 2,
-          "note": "SE(3)-equivariance, distance constraints, and torsion fitting yield physically plausible poses."
+          "note": "EquiBind is built on SE(3)-equivariant GNNs, predicts binding pockets, ligand poses, and torsion-constrained conformations—deep structural reasoning throughout the model."
         }
       }
     },
@@ -1311,15 +1367,15 @@
       "subfeatures": {
         "code_availability": {
           "score": 2,
-          "note": "Public repo: https://github.com/HannesStark/EquiBind"
+          "note": "The paper explicitly provides a GitHub repository for reproducibility: https://github.com/HannesStark/EquiBind."
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Clear algorithms, ablations, runtime analyses, and appendices."
+          "score": 1,
+          "note": "Paper provides thorough methodology and architecture explanation, but documentation quality of the repo itself is not described in the PDF."
         },
         "setup_ease": {
-          "score": 2,
-          "note": "PyTorch + RDKit; inference 0.04–0.16s per complex on GPU."
+          "score": 1,
+          "note": "Model requires RDKit, OpenBabel, GPU support, and specific preprocessing—moderate complexity; not plug-and-play."
         }
       }
     },
@@ -1327,12 +1383,12 @@
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
-          "score": 2,
-          "note": "Single forward pass pose prediction replaces multi stage pipelines."
+          "score": 1,
+          "note": "Paper does not emphasize small parameter counts; model is not minimal, but uses efficient SE(3)-equivariant layers instead of large transformers."
         },
         "runtime_scalability": {
           "score": 2,
-          "note": "Up to ~1000× faster inference than classical docking tools; sub second per complex."
+          "note": "Major strength: blind docking in ~0.16s vs 146–1405s for classical tools. Extremely fast inference and high scalability demonstrated in Table 1."
         }
       }
     },
@@ -1340,229 +1396,221 @@
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Outputs interpretable 3D poses, torsions, and keypoint alignments with RMSD validation."
+          "score": 1,
+          "note": "Outputs include coordinates, RMSD metrics, and optional torsion-corrected conformers. No explicit interpretability module, but outputs are directly meaningful."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Targets core docking tasks: site localization and pose prediction vs experimental data."
+          "note": "Outputs directly align with blind docking tasks: predicted binding site, ligand pose, centroid distance, Kabsch RMSD, and full conformers—exact match to biological use case."
         }
       }
     }
   },
+
   "VisionTransformer-PPI": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
           "score": 2,
-          "note": "Dual ViT encoders with cross-attention fusion for relational embeddings."
+          "note": "The system has clearly separated modules: SeqVec LM (sequence encoder), Vision Transformer (structural encoder), and a neural classifier after concatenation. Shown in Fig. 2, Fig. 3, and Fig. 4."
         },
         "transferability": {
-          "score": 2,
-          "note": "Transfers across species and intra-/inter-species PPIs with minimal accuracy drop."
+          "score": 1,
+          "note": "Model is evaluated only on PPI classification (Human + S. cerevisiae). No cross-task transfer (e.g., binding prediction, function prediction) is demonstrated."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Sequence embeddings reshaped to image ike tensors to capture spatial patterns."
+          "note": "Uses two modalities: protein sequence (SeqVec) and protein 3D structure (converted to volumetric 2D images for ViT). Also experiments with a third modality (GO)."
         },
         "structural_awareness": {
-          "score": 1,
-          "note": "Implicit contact cues via attention; no explicit 3D structure inputs."
+          "score": 2,
+          "note": "Structural modality is fully explicit: the method converts 3D atomic coordinates into voxel-based visualizations and uses ViT to extract structure-aware features (Fig. 1 & Fig. 2)."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 1,
-          "note": "No public repo/weights provided."
+          "score": 0,
+          "note": "The paper does not provide a code link or repository. No GitHub or supplemental code is mentioned anywhere in the PDF."
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Thorough paper with hyperparameters, datasets, and ablations."
+          "score": 1,
+          "note": "The methodology is clearly described in the paper (architectures, preprocessing, datasets), but without available code or instructions."
         },
         "setup_ease": {
           "score": 1,
-          "note": "Needs image conversion and large GPUs to train ViTs."
+          "note": "Requires PDB downloads, voxelization of protein 3D structures, SeqVec embedding generation, ViT fine-tuning, and multimodal fusion. Setup is moderately complex."
         }
       }
     },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 1,
-          "note": "ViTs are parameter-heavy vs lighter CNN/transformers."
+          "note": "Uses two large pretrained models—SeqVec (ELMo-based) + ViT-B/16—resulting in a heavy architecture. No param count comparisons are provided."
         },
         "runtime_scalability": {
-          "score": 2,
-          "note": "Patch embeddings and multi-head attention parallelize well on large datasets."
+          "score": 1,
+          "note": "Paper does not report training time, inference time, or compute resource benchmarks. Efficiency cannot be verified from the text."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 2,
-          "note": "Attention heatmaps/CAMs highlight amino acid regions driving predictions."
+          "score": 1,
+          "note": "Outputs are binary PPI predictions (interacting vs non-interacting). No visualization of attention maps or interpretability analyses are provided."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Binary PPI predictions validated against STRING/BioGRID/DIP/MINT with high AUC/F1."
+          "note": "Outputs are fully aligned with PPI classification. Achieves state-of-the-art performance on Human and S. cerevisiae datasets (Tables II & III)."
         }
       }
     }
   },
-  "HyboWaveNet": {
+
+  "RF-Ensemble-PPI": {
     "adaptability": {
       "weight": 20,
       "subfeatures": {
         "modular_architecture": {
-          "score": 2,
-          "note": "Lorentz hyperbolic GNN encoder + multi-scale graph wavelets + contrastive learning."
+          "score": 1,
+          "note": "Model combines multiple feature types (physicochemical, domain, GO similarity) and uses a Random Forest ensemble classifier. Modular in feature extraction, but model itself is not modular."
         },
         "transferability": {
-          "score": 2,
-          "note": "Generalizes across HPRD-derived networks; robust to encoder/scale variations."
+          "score": 1,
+          "note": "The method is applied only to PPI classification using human datasets. It could theoretically transfer to other organisms, but the paper provides no experiments beyond PPI classification."
         }
       }
     },
+
     "bioinformatics_relevance": {
       "weight": 30,
       "subfeatures": {
         "biological_input_modalities": {
           "score": 2,
-          "note": "Integrates graph topology with protein feature embeddings for PPI networks."
+          "note": "Uses multiple biologically meaningful features: sequence-derived features (AAC, physicochemical properties), GO biological process similarity, Pfam domain similarity, and protein localization (page 3–4)."
         },
         "structural_awareness": {
-          "score": 2,
-          "note": "Hyperbolic Lorentz space preserves hierarchical, scale-free, small-world properties."
+          "score": 0,
+          "note": "Does not incorporate 3D protein structure, contact maps, or structural graphs."
         }
       }
     },
+
     "usability": {
       "weight": 15,
       "subfeatures": {
         "code_availability": {
-          "score": 2,
-          "note": "Public repo: https://github.com/chromaprim/HybowaveNet"
+          "score": 0,
+          "note": "The paper does not provide any code, repository, or scripts for replication."
         },
         "documentation_quality": {
-          "score": 2,
-          "note": "Detailed math, architecture diagrams, and ablations."
+          "score": 1,
+          "note": "Method and feature extraction formulas are well described in the paper, making replication possible without code."
         },
         "setup_ease": {
-          "score": 1,
-          "note": "Specialized hyperbolic ops and diffusion modules increase complexity."
+          "score": 2,
+          "note": "Because it uses Random Forest + simple feature engineering, the model is relatively easy to set up compared to deep learning models."
         }
       }
     },
-    "computational_efficiency": {
-      "weight": 15,
-      "subfeatures": {
-        "parameter_count_efficiency": {
-          "score": 1,
-          "note": "Hyperbolic ops heavier than Euclidean GCN; no FLOPs reported."
-        },
-        "runtime_scalability": {
-          "score": 2,
-          "note": "Stable training/convergence over long runs; practical at network scale."
-        }
-      }
-    },
-    "output_suitability": {
-      "weight": 20,
-      "subfeatures": {
-        "output_interpretability": {
-          "score": 2,
-          "note": "Attention based feature weighting surfaces top contributive protein features."
-        },
-        "task_alignment": {
-          "score": 2,
-          "note": "Predicts PPI likelihoods with strong AUC/AUPR vs Struct2Graph/Fully HNN."
-        }
-      }
-    }
-  },
-  "RF-Ensemble": {
-    "adaptability": {
-      "weight": 20,
-      "subfeatures": {
-        "modular_architecture": {
-          "score": 2,
-          "note": "SMOTE oversampling + feature fusion (PSSM-SPF + RER) + Random Forest ensemble pipeline."
-        },
-        "transferability": {
-          "score": 2,
-          "note": "Consistent across Dset186, Dtestset72, PDBtestset164 without retraining."
-        }
-      }
-    },
-    "bioinformatics_relevance": {
-      "weight": 30,
-      "subfeatures": {
-        "biological_input_modalities": {
-          "score": 2,
-          "note": "Evolutionary PSSM and residue-level conservation features capture relevant biology."
-        },
-        "structural_awareness": {
-          "score": 1,
-          "note": "Sequence-focused; uses interface/solvent annotations but no explicit 3D modeling."
-        }
-      }
-    },
-    "usability": {
-      "weight": 15,
-      "subfeatures": {
-        "code_availability": {
-          "score": 2,
-          "note": "Public repo: http://github.com/QUST-AIBBDRC/EL-SMURF"
-        },
-        "documentation_quality": {
-          "score": 2,
-          "note": "Comprehensive workflow figures, equations, and comparisons."
-        },
-        "setup_ease": {
-          "score": 1,
-          "note": "Implemented in MATLAB/R; extra setup vs Python stacks."
-        }
-      }
-    },
+
     "computational_efficiency": {
       "weight": 15,
       "subfeatures": {
         "parameter_count_efficiency": {
           "score": 2,
-          "note": "Optimized RFs with feature selection achieve strong accuracy at low complexity."
+          "note": "Random Forests are lightweight and require no large pretrained models. Efficient for training and inference."
         },
         "runtime_scalability": {
-          "score": 1,
-          "note": "Multiple RFs increase training time; feasible for mid-scale data."
+          "score": 2,
+          "note": "Extremely fast to train and scales well on large datasets. No expensive GPU-based computation is required."
         }
       }
     },
+
     "output_suitability": {
       "weight": 20,
       "subfeatures": {
         "output_interpretability": {
-          "score": 1,
-          "note": "RF feature importance is available; limited visualization tools."
+          "score": 2,
+          "note": "Random Forests provide feature importance (page 5, Table). Feature interpretability is inherently high."
         },
         "task_alignment": {
           "score": 2,
-          "note": "Directly predicts interface residues with strong F-measure/MCC vs baselines."
+          "note": "Outputs directly match binary PPI prediction tasks and achieve strong results (AUC 0.92–0.95 across datasets, Table 2)."
         }
       }
     }
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
   "Improved_Prediction_of_PPI_Using_AF2": {
     "adaptability": {
       "weight": 20,
