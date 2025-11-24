@@ -2,7 +2,7 @@
 
 
 # Backend -> terminal 1
-uvicorn [api.app](http://api.app):app --reload --port 8000
+uvicorn api.app:app --reload --port 8000
 
 # Frontend -> terminal 2
 cd web
@@ -10,7 +10,7 @@ python -m http.server 5500
 
 # Seed -> terminal 3
 python -m api.seed_from_json
-python tools/check_[db.py](http://db.py)
+python tools/check_db.py
 
 
 link: http://[::]:5500/ -> it should be visible here on localhost
