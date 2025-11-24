@@ -163,6 +163,13 @@ input:focus, select:focus, textarea:focus, button:focus{
   background:#0b1226;
 }
 
+
+
+
+
+
+
+
 /* Panels / Browser */
 .panel{
   background:linear-gradient(0deg,var(--panel),var(--panel2));
@@ -245,6 +252,19 @@ pre{
 .browser-controls{
   margin-bottom:10px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Ingest & Score form specifics */
 #ingestForm textarea,

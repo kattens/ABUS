@@ -98,18 +98,30 @@
 
 
 
-    <!-- Browser -->
-    <section id="browser" class="section fade-in">
+   <section id="browser" class="section fade-in">
       <div class="wrap">
         <h2>What models would you like to look?</h2>
         <p class="muted">Pick a model to load its categories, weights, and detailed subfeatures.</p>
 
         <div class="browser panel">
-          <div class="controls">
-            <label for="modelSelect" class="muted">Model</label>
+          <!-- New header block -->
+          <div class="browser-header">
+            <div>
+              <h3 class="browser-title">Model Browser</h3>
+              <p class="browser-sub muted">
+                Select a model from the list and explore its ABUS categories and subfeatures.
+              </p>
+            </div>
+            <span id="status" class="pill browser-status">status: idle</span>
+          </div>
+
+          <!-- Controls (note: extra class browser-controls) -->
+          <div class="controls browser-controls">
+            <label for="modelSelect" class="muted">
+              Model
+            </label>
             <select id="modelSelect" aria-label="Model name"></select>
             <button id="loadBtn" type="button" class="btn primary">Load details</button>
-            <span id="status" class="pill">status: idle</span>
           </div>
 
           <div id="modelView" class="model-grid" aria-live="polite"></div>
@@ -121,6 +133,7 @@
         </div>
       </div>
     </section>
+
 
     <!-- Recommender -->
     <section id="recommender" class="section fade-in">
