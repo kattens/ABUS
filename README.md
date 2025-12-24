@@ -341,7 +341,7 @@ These ensure the model’s outputs are useful, interpretable, and fit the task.
 
     uncertainty_quantification: Boolean/Integer
 
-Ethical Considerations
+Ethical Considerations (Future Work)
 
 These capture issues around fairness, transparency, and privacy.
 
